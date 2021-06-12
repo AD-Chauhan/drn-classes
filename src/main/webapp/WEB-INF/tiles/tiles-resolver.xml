@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE tiles-definitions PUBLIC  
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+ 	<definition name="home-page" template="/layout/Users/layout.jsp">
+  		<put-attribute name="body" value="/pages/Home/home.jsp" /> 
+  	</definition>
+  	
+  	<definition name="play-video" template="/layout/Users/layout.jsp">
+  		<put-attribute name="body" value="/pages/Videos/play-videos.jsp" /> 
+  	</definition>
+  	
+  	<definition name="login-page" template="/layout/Login/login-layout.jsp">
+  		<put-attribute name="body" value="/pages/Admin/login-dashboard.jsp" /> 
+  	</definition>
+    <definition name="register-page" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Admin/register-dashboard.jsp" /> 
+  	</definition>
+  	
+  	<definition name="upload-video" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Videos/upload-videos.jsp" /> 
+  	</definition>
+  	
+  	<definition name="video-details" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Videos/video-details.jsp" /> 
+  	</definition>
+  	
+  	<definition name="edit-users-dashboard" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Admin/edit-users-dashboard.jsp" /> 
+  	</definition>
+  	
+  	
+  	<definition name="admin-dashboard" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Admin/admin-dashboard.jsp" /> 
+  	</definition>
+  	
+  	<definition name="upload-blogs" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Admin/upload-blogs.jsp" /> 
+  	</definition>
+  	
+  	<definition name="view-blogs" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Admin/view-blogs.jsp" /> 
+  	</definition>
+  	
+  	<definition name="video-conferencing" template="/layout/Classroom/layout.jsp">
+  		<put-attribute name="body" value="/pages/Classroom/video-conferencing.jsp" /> 
+  	</definition>
+  	
+  	<definition name="blog-details" template="/layout/Users/layout.jsp">
+  		<put-attribute name="body" value="/pages/Home/Blogs.jsp" /> 
+  	</definition>
+  	
+  	<definition name="contact-details" template="/layout/Users/layout.jsp">
+  		<put-attribute name="body" value="/pages/Home/contact.jsp" /> 
+  	</definition>
+  	
+  	<definition name="course-details" template="/layout/Users/layout.jsp">
+  		<put-attribute name="body" value="/pages/Home/course-details.jsp" /> 
+  	</definition>
+  
+  	
+</tiles-definitions>
