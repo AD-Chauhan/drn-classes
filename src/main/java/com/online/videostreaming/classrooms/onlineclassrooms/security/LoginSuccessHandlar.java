@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.provider.endpoint.DefaultRedirectReso
 import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -42,7 +43,7 @@ public class LoginSuccessHandlar extends SimpleUrlAuthenticationSuccessHandler {
 		if (userDetails.getFailedAttempt() > 0) {
 			userService.resetFailedAttempts(userDetails.getEmail());
 		}
-
+		request.getSession().setAttribute("userDetails", userDetails);
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		authorities.forEach(authority -> {
 			if (authority.getAuthority().equals("ROLE_ADMIN")) {
@@ -82,7 +83,8 @@ public class LoginSuccessHandlar extends SimpleUrlAuthenticationSuccessHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				redirectStrategy.sendRedirect(request, response, "/login");
+				redirectStrategy.sendRedirect(request, response,
+						ServletUriComponentsBuilder.fromCurrentContextPath().path("/login").toUriString());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

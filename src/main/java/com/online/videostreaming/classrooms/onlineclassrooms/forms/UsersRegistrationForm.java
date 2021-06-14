@@ -28,7 +28,7 @@ public class UsersRegistrationForm  implements Serializable {
 	private boolean enabled;
 	private String createdBy;
 	private Date createdOn;
-	private List<UsersRole> userRole;
+	private Integer userRole;
 	
 	private String _csrf;
 
@@ -65,11 +65,11 @@ public class UsersRegistrationForm  implements Serializable {
 		this.userId = userId;
 	}
 
-	public List<UsersRole> getUserRole() {
+	public Integer getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(List<UsersRole> userRole) {
+	public void setUserRole(Integer userRole) {
 		this.userRole = userRole;
 	}
    

@@ -105,6 +105,20 @@ span.message {
 
 
 $(document).ready(function(){
+	$('#userRegistrationForm').each(function() { this.reset() });
+	 jQuery.validator.addMethod("phonenumber", function (phone_number, element) {
+	      phone_number = phone_number.replace(/\s+/g, "");
+	      return this.optional(element) || phone_number.length == 13 &&
+	      phone_number.match(/^\+[0-9]{12}$/);
+	  }, "Please specify a valid phone number");
+	jQuery.validator.addMethod("validate_email", function(value, element) {
+
+	    if (/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value)) {
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}, "Please enter a valid Email.");
 	$('#userRegistrationForm').validate(
 			{
 				errorElement : 'div',
@@ -122,14 +136,20 @@ $(document).ready(function(){
 					},
 					email : {
 						required : true
+						,
+						validate_email: true
 
 					},
 					userPassword : {
 						required : true
 
 					},
-					phone  : {
+					userRole: {
 						required : true
+					},
+					phone  : {
+						required : true,
+						phonenumber:true
 					},
 					batch  : {
 						required : true
@@ -182,59 +202,13 @@ $(document).ready(function(){
 					
 				},
 				submitHandler : function(form) {
-				 var isChecked=0;
-				
-				$("input.slectedCheckBox").each(function(index){
-				
-				
-				var checkBoxId=$(this).attr('id');
- 		        var splittedArr=checkBoxId.split("]");
- 		        var splittedArrTemp=splittedArr[0].split("[");
- 		        var checkBoxIndex=splittedArrTemp[1];
- 		        var i = parseInt(checkBoxIndex);
- 		
- 		 
- 		        var chk = document.getElementById("userRole["+i+"].roleId").checked;
-				if(chk === true){
-				
-				isChecked=1;
-				
-				}
-				});
-				if(isChecked == 0){
- 			 		$('.slectedCheckBoxGroup').removeClass('has-info').addClass(
-							'has-error');
- 			        $('#slectedCheckBox-error').css("display","block");
- 			       $('#slectedCheckBox-error').html('This field is required.');
- 		        } else{
- 		        $('.slectedCheckBoxGroup').removeClass('has-error');
-					$('#slectedCheckBox-error').css("display","none");
-					$('#slectedCheckBox-error').html('');
- 		            form.submit();
- 		        
- 		        }
+					 form.submit();
 					
 				}
 			});
 
 });
 
-function isunchecked(index){
-	 
- 	if(!document.getElementById("userRole["+index+"].roleId").checked){
- 		$('.slectedCheckBoxGroup').removeClass('has-info').addClass(
-		'has-error');
-       $('#slectedCheckBox-error').css("display","block");
-       $('#slectedCheckBox-error').html('This field is required.');
- 	}
- 	else{
- 		$('.slectedCheckBoxGroup').removeClass('has-error');
-		$('#slectedCheckBox-error').css("display","none");
-		$('#slectedCheckBox-error').html('');
-         form.submit();
-     
-     }
- 	}
  
 
 
@@ -396,22 +370,17 @@ function isunchecked(index){
 							<hr>
 							
 							
-							<div class="form-group row slectedCheckBoxGroup">
-                             <span class="label-text col-md-2 col-form-label text-md-right py-0">Role</span> 
-							        <div class="col-md-10 form-inline">
-							                 <c:if test="${!empty roleList}"> 
+							<div class="form-group row required">
+                             <span class="label-text col-md-2 col-form-label text-md-right">Role</span> 
+							        <div class="col-md-10 ">
+							        <form:select  class="form-control" path="userRole" id="userRole" name="userRole">
+							        <form:option value="">--Select--</form:option>
 							                       <c:forEach items="${roleList}" varStatus="index" var="record">
-											                 <label class="form-check"> 
-											                      <input onclick="isunchecked(${index.index})"  type="checkbox"  id="userRole[${index.index}].roleId" name="userRole[${index.index}].roleId" 
-											                      value="${record.roleId}" class="form-check-input slectedCheckBox"> 
-											                      <span class="form-check-label label-text " style="padding-right: 13px !important;">${record.abbreCode}</span> 
-											                      
-											                 </label> 
-											                
+											                  
+											                 <form:option value="${record.roleId}">${record.abbreCode}</form:option>		
 							                       </c:forEach>
-							                 </c:if>
+							                       	</form:select>
 							         </div>
-							          <div id="slectedCheckBox-error" class="help-block" style="display: none; width: 100%;"></div>
 							</div>
 							<hr>
 							
@@ -424,7 +393,7 @@ function isunchecked(index){
 							</div>
 							<hr>
 							
-							<div class="form-group row">
+							<div class="form-group row required">
 								<span class="label-text col-md-2 col-form-label text-md-right">Batch/Class</span>
 								<div class="col-md-10">
 									<form:select  class="form-control" path="batch" id="batch" name="batch">

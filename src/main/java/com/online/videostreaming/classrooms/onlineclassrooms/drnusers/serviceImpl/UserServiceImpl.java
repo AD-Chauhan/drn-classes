@@ -1,20 +1,13 @@
 package com.online.videostreaming.classrooms.onlineclassrooms.drnusers.serviceImpl;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.repository.UserEntityDao;
@@ -71,13 +64,13 @@ public class UserServiceImpl implements UserService {
 	public int uploadUsersInformation(UsersRegistrationForm usersRegistrationForm) throws Exception {
 		
         List<UsersRole> roles = new ArrayList<>();
-		if(usersRegistrationForm.getUserRole()!=null && !usersRegistrationForm.getUserRole().isEmpty()) {
+		if(usersRegistrationForm.getUserRole()!=null ) {
 			
 			
-			for(UsersRole role:usersRegistrationForm.getUserRole()) {
+			
 				
 				UsersRole usersRole = new UsersRole();
-				usersRole.setRoleId(role.getRoleId());
+				usersRole.setRoleId(usersRegistrationForm.getUserRole());
 				usersRole.setCreatedOn(new Date());
 				usersRole.setCreatedBy("ADMIN");
 				usersRole.setUpdatedOn(new Date());
@@ -86,7 +79,7 @@ public class UserServiceImpl implements UserService {
 				usersRole.setEnabled(true);
 				roles.add(usersRole);
 				
-			}
+			
 			
 			
 		}
@@ -138,7 +131,7 @@ public class UserServiceImpl implements UserService {
 				registeredUsers.setBatch(objects.getBatch());
 				registeredUsers.setFatherName(objects.getFatherName());
 				registeredUsers.setMotherName(objects.getMotherName());
-				registeredUsers.setUserRole(objects.getRoles());
+				registeredUsers.setUserRole(objects.getRoles().get(0).getRoleId());
 				registeredUsers.setCorrespondanceAddress(objects.getCorrespondanceAddress());
 				registeredUsers.setPermanentAddress(objects.getPermanentAddress());
 				registeredUsers.setPhone(objects.getPhone());
@@ -155,6 +148,12 @@ public class UserServiceImpl implements UserService {
 		
 		
 		return null;
+	}
+
+	@Override
+	public String deleteOrDeactivateUserById(Integer idToDelete, String action) throws Exception {
+		// TODO Auto-generated method stub
+		return userEntityDao.deleteOrDeactivateUserById(idToDelete, action);
 	}
 
 }

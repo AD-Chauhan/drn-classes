@@ -3,6 +3,7 @@ package com.online.videostreaming.classrooms.onlineclassrooms.controller;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,21 +17,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.service.UserService;
+import com.online.videostreaming.classrooms.onlineclassrooms.entity.UsersEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.UsersRole;
 import com.online.videostreaming.classrooms.onlineclassrooms.enums.Batch;
 import com.online.videostreaming.classrooms.onlineclassrooms.enums.CourseCategory;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.LoginForm;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.UsersRegistrationForm;
+import com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl.LoginPasswordService;
 @Controller
 public class LoginController {
 
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private LoginPasswordService loginPasswordService;
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginPage(Model model,@ModelAttribute("loginForm") LoginForm logingForm, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
+		loginPasswordService.refreshKeys();
+		loginPasswordService.refreshSecrets();
+		
+		System.out.println(loginPasswordService.getHS256KeysBytes());
+		System.out.println(loginPasswordService.getHS256SecretBytes());
 		model.addAttribute("courseCategory", CourseCategory.mappings.entrySet()
 	            .stream()
 	            .sorted((Map.Entry.<Integer, String>comparingByValue()))
@@ -64,15 +73,28 @@ public class LoginController {
 	public String registrationPagePost(Model model,@ModelAttribute("userRegistrationForm") UsersRegistrationForm userRegistrationForm, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
-		int saveCount= userService.uploadUsersInformation(userRegistrationForm);
-        if(saveCount==0) {
-     	   
-     	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.SUCCESS_KEY,"You successfully registered user " + userRegistrationForm.getEmail()); 
-        }else if(saveCount==1) {
-     	   
-     	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY, "You un-successfully not registered user " + userRegistrationForm.getEmail()); 
-     	   
-        }
+		Optional<UsersEntity> usersEntity=userService.findUserByUserName(userRegistrationForm.getEmail());
+		if(usersEntity.isPresent()) {
+			
+			model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY, "You un-successfully not registered user " + userRegistrationForm.getEmail()+ " Because this "
+					+ "this email already exist .Please choose another email id"); 
+	     	   
+		}else {
+			
+			int saveCount= userService.uploadUsersInformation(userRegistrationForm);
+	        if(saveCount==0) {
+	     	   
+	     	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.SUCCESS_KEY,"You successfully registered user " + userRegistrationForm.getEmail()); 
+	        }else if(saveCount==1) {
+	     	   
+	     	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY, "You un-successfully not registered user " + userRegistrationForm.getEmail()); 
+	     	   
+	        }
+			
+		}
+		
+		UsersRegistrationForm registrationForm=new UsersRegistrationForm();
+		model.addAttribute("userRegistrationForm", registrationForm);
 		model.addAttribute("roleList", userService.findAllUserRoles());
 		return "register-page";
 
@@ -87,6 +109,14 @@ public class LoginController {
 		List<UsersRole> roleList= userService.findAllUserRoles();
 		model.addAttribute("roleList", roleList);
 		return "edit-users-dashboard";
+
+	}
+	
+	@RequestMapping(value = "/error", method = RequestMethod.GET)
+	public String loginPage(Model model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+
+		return "error-page";
 
 	}
 	/*

@@ -28,7 +28,7 @@ public EndUserDetails(UsersEntity user) {
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
 		getRoles().forEach(r -> {
-			authorities.add(new SimpleGrantedAuthority(r.getRole()));
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + r.getRole().toUpperCase()));
 
 		});
 

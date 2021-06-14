@@ -19,6 +19,7 @@ public interface UserEntityDao {
     public List<UsersRole> findAllUserRoles() throws Exception;
     public int uploadUsersInformation(UsersEntity usersEntity) throws Exception;
     public List<UsersEntity> findAllUserDetails() throws Exception;
+    public String deleteOrDeactivateUserById(Integer idToDelete,String action) throws Exception;
     
     
 }

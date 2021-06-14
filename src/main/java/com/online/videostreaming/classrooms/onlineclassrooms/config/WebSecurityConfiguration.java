@@ -1,6 +1,5 @@
 package com.online.videostreaming.classrooms.onlineclassrooms.config;
 
-import static com.online.videostreaming.classrooms.onlineclassrooms.utils.WebConstant.LOGIN_TIMEOUT_URL;
 import static com.online.videostreaming.classrooms.onlineclassrooms.utils.WebConstant.LOGIN_URL;
 import static com.online.videostreaming.classrooms.onlineclassrooms.utils.WebConstant.LOGOUT_URL;
 
@@ -30,7 +29,6 @@ import org.springframework.security.oauth2.provider.approval.InMemoryApprovalSto
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -43,10 +41,10 @@ import com.online.videostreaming.classrooms.onlineclassrooms.captcha.services.im
 import com.online.videostreaming.classrooms.onlineclassrooms.csrf.service.CsrfSecretService;
 import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.service.EndUserDetailsService;
 import com.online.videostreaming.classrooms.onlineclassrooms.filters.CaptchaValidationFilter;
-import com.online.videostreaming.classrooms.onlineclassrooms.security.DefaultAuthenticationEntryPoint;
 import com.online.videostreaming.classrooms.onlineclassrooms.security.LoginFailureHandler;
 import com.online.videostreaming.classrooms.onlineclassrooms.security.LoginSuccessHandlar;
 import com.online.videostreaming.classrooms.onlineclassrooms.security.OnLogoutSuccessHandler;
+import com.online.videostreaming.classrooms.onlineclassrooms.security.RestAuthenticationEntryPoint;
 import com.online.videostreaming.classrooms.onlineclassrooms.utils.RequestUtils;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -112,7 +110,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 								.permitAll().requestMatchers(EndpointRequest.to("info", "health", "prometheus"))
 								.permitAll().anyRequest().authenticated().and().authenticationProvider(authProvider())
 								.httpBasic().disable().exceptionHandling()
-								.authenticationEntryPoint(authenticationEntryPoint())//
+								.authenticationEntryPoint(restAuthenticationEntryPoint)//
 								.accessDeniedHandler(accessDeniedHandler());
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -127,10 +125,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 private OnLogoutSuccessHandler logoutSuccessHandler; 
 
 	
-	@Bean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
-		return new DefaultAuthenticationEntryPoint(LOGIN_URL, LOGIN_TIMEOUT_URL);
-	}
+	 @Autowired
+	 private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
 	@Bean
 	public AccessDeniedHandler accessDeniedHandler() {

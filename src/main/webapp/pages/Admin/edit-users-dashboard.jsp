@@ -10,7 +10,7 @@
 <script type='text/javascript'
 	src="${pageContext.request.contextPath}/drnclasses/util.js"> </script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/drnclasses/interface/videoDwrUtils.js"></script>
+	src="${pageContext.request.contextPath}/drnclasses/interface/usersDwrUtils.js"></script>
 
 <script type="text/javascript">	
 function deleteUserRecordOrDeactive(userid,action){
@@ -33,8 +33,106 @@ function deleteUserRecordOrDeactive(userid,action){
 		    callback: function (result) {
 		    	if(result)
 				{
-				videoDwrUtils.deleteFolderAndVideoById(parseInt(userid),action,{callback:function(message){
-					window.location.href=pageContext+"/video-details";
+		    		usersDwrUtils.deleteOrDeactivateUserById(parseInt(userid),action,{callback:function(message){
+					
+		    			if(message=='true'){
+		    				
+		    				window.location.href=pageContext+"/edit-users-dashboard";
+		    				$( document ).ready(function() {
+								$.notify({
+									title: 'Message:',
+									message: 'User Deleated Successfully',
+								},{
+									// settings
+									element: 'body',
+									position: null,
+									type: "success",
+									allow_dismiss: true,
+									newest_on_top: false,
+									showProgressbar: false,
+									placement: {
+										from: "top",
+										align: "right"
+									},
+									offset: 20,
+									spacing: 10,
+									z_index: 1031,
+									delay: 5000,
+									timer: 1000,
+									url_target: '_blank',
+									mouse_over: null,
+									animate: {
+										enter: 'animated fadeInDown',
+										exit: 'animated fadeOutUp'
+									},
+									onShow: null,
+									onShown: null,
+									onClose: null,
+									onClosed: null,
+									icon_type: 'class',
+									template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+										'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+										'<i class="far fa-comments"></i> ' +
+										
+										'<span data-notify="message">{2}</span>' +
+										'<div class="progress" data-notify="progressbar">' +
+											'<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>' +
+										'</div>' +
+										
+									'</div>' 
+								});
+							});
+		    				
+		    			}else{
+		    				
+		    				
+		    				$( document ).ready(function() {
+								$.notify({
+									title: 'Message:',
+									message: 'Somthing is wrong ..Unable to delete User',
+								},{
+									// settings
+									element: 'body',
+									position: null,
+									type: "danger",
+									allow_dismiss: true,
+									newest_on_top: false,
+									showProgressbar: false,
+									placement: {
+										from: "top",
+										align: "right"
+									},
+									offset: 20,
+									spacing: 10,
+									z_index: 1031,
+									delay: 5000,
+									timer: 1000,
+									url_target: '_blank',
+									mouse_over: null,
+									animate: {
+										enter: 'animated fadeInDown',
+										exit: 'animated fadeOutUp'
+									},
+									onShow: null,
+									onShown: null,
+									onClose: null,
+									onClosed: null,
+									icon_type: 'class',
+									template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+										'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+										'<i class="far fa-comments"></i> ' +
+										
+										'<span data-notify="message">{2}</span>' +
+										'<div class="progress" data-notify="progressbar">' +
+											'<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>' +
+										'</div>' +
+										
+									'</div>' 
+								});
+							});
+		    			}
+		    			
+		    			
 				},
 				async : false
 				});	
@@ -60,8 +158,225 @@ function deleteUserRecordOrDeactive(userid,action){
 		    callback: function (result) {
 		    	if(result)
 				{
-				videoDwrUtils.deleteFolderAndVideoById(parseInt(userid),action,{callback:function(message){
-					window.location.href=pageContext+"/video-details";
+		    		usersDwrUtils.deleteOrDeactivateUserById(parseInt(userid),action,{callback:function(message){
+if(message=='true'){
+		    				
+		    				window.location.href=pageContext+"/edit-users-dashboard";
+		    				$( document ).ready(function() {
+								$.notify({
+									title: 'Message:',
+									message: 'User Deactivated Successfully',
+								},{
+									// settings
+									element: 'body',
+									position: null,
+									type: "success",
+									allow_dismiss: true,
+									newest_on_top: false,
+									showProgressbar: false,
+									placement: {
+										from: "top",
+										align: "right"
+									},
+									offset: 20,
+									spacing: 10,
+									z_index: 1031,
+									delay: 5000,
+									timer: 1000,
+									url_target: '_blank',
+									mouse_over: null,
+									animate: {
+										enter: 'animated fadeInDown',
+										exit: 'animated fadeOutUp'
+									},
+									onShow: null,
+									onShown: null,
+									onClose: null,
+									onClosed: null,
+									icon_type: 'class',
+									template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+										'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+										'<i class="far fa-comments"></i> ' +
+										
+										'<span data-notify="message">{2}</span>' +
+										'<div class="progress" data-notify="progressbar">' +
+											'<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>' +
+										'</div>' +
+										
+									'</div>' 
+								});
+							});
+		    				
+		    			}else{
+		    				
+		    				
+		    				$( document ).ready(function() {
+								$.notify({
+									title: 'Message:',
+									message: 'Somthing is wrong ..Unable to Deactivate  User',
+								},{
+									// settings
+									element: 'body',
+									position: null,
+									type: "danger",
+									allow_dismiss: true,
+									newest_on_top: false,
+									showProgressbar: false,
+									placement: {
+										from: "top",
+										align: "right"
+									},
+									offset: 20,
+									spacing: 10,
+									z_index: 1031,
+									delay: 5000,
+									timer: 1000,
+									url_target: '_blank',
+									mouse_over: null,
+									animate: {
+										enter: 'animated fadeInDown',
+										exit: 'animated fadeOutUp'
+									},
+									onShow: null,
+									onShown: null,
+									onClose: null,
+									onClosed: null,
+									icon_type: 'class',
+									template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+										'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+										'<i class="far fa-comments"></i> ' +
+										
+										'<span data-notify="message">{2}</span>' +
+										'<div class="progress" data-notify="progressbar">' +
+											'<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>' +
+										'</div>' +
+										
+									'</div>' 
+								});
+							});
+		    			}
+				},
+				async : false
+				});	
+				
+				}
+		    }
+		});
+		
+	}else if(action=='ACTIVE'){
+		
+		bootbox.confirm({
+		    message: "Are you sure you want to deactive  this user ?",
+		    buttons: {
+		        confirm: {
+		            label: 'DACTIVE',
+		            className: 'btn btn-rounded btn-outline-warning'
+		        },
+		        cancel: {
+		            label: 'CANCEL',
+		            className: 'btn btn-rounded btn-outline-success'
+		        }
+		    },
+		    callback: function (result) {
+		    	if(result)
+				{
+		    		usersDwrUtils.deleteOrDeactivateUserById(parseInt(userid),action,{callback:function(message){
+if(message=='true'){
+		    				
+		    				window.location.href=pageContext+"/edit-users-dashboard";
+		    				$( document ).ready(function() {
+								$.notify({
+									title: 'Message:',
+									message: 'User Activated Successfully',
+								},{
+									// settings
+									element: 'body',
+									position: null,
+									type: "success",
+									allow_dismiss: true,
+									newest_on_top: false,
+									showProgressbar: false,
+									placement: {
+										from: "top",
+										align: "right"
+									},
+									offset: 20,
+									spacing: 10,
+									z_index: 1031,
+									delay: 5000,
+									timer: 1000,
+									url_target: '_blank',
+									mouse_over: null,
+									animate: {
+										enter: 'animated fadeInDown',
+										exit: 'animated fadeOutUp'
+									},
+									onShow: null,
+									onShown: null,
+									onClose: null,
+									onClosed: null,
+									icon_type: 'class',
+									template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+										'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+										'<i class="far fa-comments"></i> ' +
+										
+										'<span data-notify="message">{2}</span>' +
+										'<div class="progress" data-notify="progressbar">' +
+											'<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>' +
+										'</div>' +
+										
+									'</div>' 
+								});
+							});
+		    				
+		    			}else{
+		    				
+		    				
+		    				$( document ).ready(function() {
+								$.notify({
+									title: 'Message:',
+									message: 'Somthing is wrong ..Unable to Deactivate  User',
+								},{
+									// settings
+									element: 'body',
+									position: null,
+									type: "danger",
+									allow_dismiss: true,
+									newest_on_top: false,
+									showProgressbar: false,
+									placement: {
+										from: "top",
+										align: "right"
+									},
+									offset: 20,
+									spacing: 10,
+									z_index: 1031,
+									delay: 5000,
+									timer: 1000,
+									url_target: '_blank',
+									mouse_over: null,
+									animate: {
+										enter: 'animated fadeInDown',
+										exit: 'animated fadeOutUp'
+									},
+									onShow: null,
+									onShown: null,
+									onClose: null,
+									onClosed: null,
+									icon_type: 'class',
+									template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+										'<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+										'<i class="far fa-comments"></i> ' +
+										
+										'<span data-notify="message">{2}</span>' +
+										'<div class="progress" data-notify="progressbar">' +
+											'<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>' +
+										'</div>' +
+										
+									'</div>' 
+								});
+							});
+		    			}
 				},
 				async : false
 				});	
@@ -101,6 +416,7 @@ function deleteUserRecordOrDeactive(userid,action){
 						<th>ROLES/ROLE</th>
 						<th>Delete</th>
 						<th>Deactivate</th>
+						<th>Activate</th>
 
 					</tr>
 				</thead>
@@ -159,10 +475,12 @@ function deleteUserRecordOrDeactive(userid,action){
 								
 								<div class="sidebar--nav">
 					                     <ul>
-					                     <c:if test="${!empty record.userRole}">
+					                     <c:if test="${!empty roleList}">
 					                     
-					                     <c:forEach items="${record.userRole}" varStatus="index" var="roles">
+					                     <c:forEach items="${roleList}" varStatus="index" var="roles">
+					                      <c:if test="${roles.roleId eq record.userRole}">
 					                        <li style="margin-top: 5px !important;"><span style="color: #b13b0f !important; font-weight: 700 !important;text-transform: uppercase !important;">${roles.abbreCode}</span> </li>
+					                        </c:if>
 					                       </c:forEach> 
 					                      </c:if>
 					                    </ul>
@@ -180,6 +498,11 @@ function deleteUserRecordOrDeactive(userid,action){
 									onclick="deleteUserRecordOrDeactive(${record.userId},'DACTIVE')"><i
 										class="fa fa-power-off" aria-hidden="true"></i></a>
 										</td>
+										
+								<td><a style="font-size: 27px !important;" href="#"
+									onclick="deleteUserRecordOrDeactive(${record.userId},'ACTIVE')"><i
+										class="fa fa-toggle-on" aria-hidden="true"></i></a>
+										</td>		
 
 							</tr>
 						</c:forEach>

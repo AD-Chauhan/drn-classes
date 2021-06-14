@@ -60,5 +60,8 @@
   		<put-attribute name="body" value="/pages/Home/course-details.jsp" /> 
   	</definition>
   
+  <definition name="error-page" template="/layout/Login/login-layout.jsp">
+  		<put-attribute name="body" value="/pages/Error/errors.jsp" /> 
+  	</definition>
   	
 </tiles-definitions>

@@ -21,6 +21,7 @@ public interface UserService {
     public List<UsersRole> findAllUserRoles() throws Exception;
     public int uploadUsersInformation(UsersRegistrationForm utudentRegistrationForm) throws Exception;
     public List<UsersRegistrationForm> findAllUserDetails() throws Exception;
+    public String deleteOrDeactivateUserById(Integer idToDelete,String action) throws Exception;
     
     
     

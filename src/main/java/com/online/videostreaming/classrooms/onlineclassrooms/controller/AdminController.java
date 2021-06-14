@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -39,6 +40,7 @@ public class AdminController {
     ServletContext context;
 	@Autowired
 	private BlogService blogService;
+	@PreAuthorize ("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/admin-dashboard", method = RequestMethod.GET)
 	public String loginPage(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -49,7 +51,7 @@ public class AdminController {
 	
 	
 	
-	
+	@PreAuthorize ("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/upload-blogs", method = RequestMethod.GET)
 	public String blogGetPage(@ModelAttribute("blogsForms") BlogsForms blogsForms,Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -58,7 +60,7 @@ public class AdminController {
 
 	}
 	
-	
+	@PreAuthorize ("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/view-blogs", method = RequestMethod.GET)
 	public String viewBlogGetPage(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {

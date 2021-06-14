@@ -56,10 +56,11 @@
 
 .error {
 	color: #b70202;
-	font-weight: 700;
-	font-size: 11px;
+	font-weight: 600;
+	font-size: 12px;
 	letter-spacing: 1px;
 	text-transform: uppercase;
+	display:none;
 }
 
 .footer-refresh-links {
@@ -109,18 +110,16 @@
     border-radius: 0;
     
 }
+
 </style>
 <script type="text/javascript">
 var pageContext='${pageContext.request.contextPath}';
    
   $(function(){
 	  
-	      $("#invalid_captchaAnswer_error").hide();
-		  $("#captchaAnswer_error").hide();
+	      $("#captchaAnswer_error").hide();
 		  $("#userName_error").hide();
-		  $("#invalid_error").hide();
 		  $("#userPassword_error").hide();
-		  $("#invalid_password_error").hide();
 	  
 	  
 	  
@@ -139,12 +138,9 @@ var pageContext='${pageContext.request.contextPath}';
    }
    	
    	 function validateUser(obj){
-   		  $("#invalid_captchaAnswer_error").hide();
    		  $("#captchaAnswer_error").hide();
    		  $("#userName_error").hide();
-   		  $("#invalid_error").hide();
    		  $("#userPassword_error").hide();
-   		  $("#invalid_password_error").hide();
    		  var userName = validateFielData('userName');
    		  var password =validateFielData('userPassword');
    		  var captchaAnswer =validateFielData('captchaAnswer');
@@ -220,24 +216,26 @@ var pageContext='${pageContext.request.contextPath}';
 											<i class="fas fa-user"></i>
 										</div>
 										<form:input path="userName" id="userName"
-											placeholder="User Name" autocomplete="on" htmlEscape="true"
+											placeholder="User Name" autocomplete="on" htmlEscape="true" maxlength="20"
 											cssClass="input-md round form-control" />
-										<div class="error" id="userName_error">
+										
+									</div>
+									<div class="error" id="userName_error">
 											<spring:message code="Error.Required" />
 										</div>
-									</div>
 								</div>
 								<div class="form-group">
 									<div class="input-group">
 										<div class="input-group-prepend">
 											<i class="fas fa-key"></i>
 										</div>
-										<form:password path="password" id="userPassword"  placeholder="Password" 
+										<form:password path="password" id="userPassword"  placeholder="Password" maxlength="20"
                               autocomplete="off" htmlEscape="true" cssClass="input-md round form-control"/>
-                           <div class="error" id="userPassword_error">
+                           
+									</div>
+									<div class="error" id="userPassword_error">
                               <spring:message code="Error.Required" />
                            </div>
-									</div>
 								</div>
 
 								<div class="row">
@@ -257,7 +255,7 @@ var pageContext='${pageContext.request.contextPath}';
 												class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-0 mt-10"
 												style="padding-left: 3px !important;">
 												<div class="form-group">
-													 <form:input  id="captchaAnswer" path="captchaAnswer" placeholder="Captcha Answer"  htmlEscape="true" autocomplete="off" cssClass="input-md round form-control"/>
+													 <form:input  id="captchaAnswer" maxlength="6" path="captchaAnswer" placeholder="Captcha Answer"  htmlEscape="true" autocomplete="off" cssClass="input-md round form-control"/>
                                      
 													<div class="error" id="captchaAnswer_error">
                                           <spring:message code="Error.Required" />
@@ -276,7 +274,7 @@ var pageContext='${pageContext.request.contextPath}';
 								</div>
 								<div class="m-account--actions">
 									<a href="#" class="btn-link">Forgot Password?</a>
-									<button type="button" class="btn btn-rounded btn-info">Login</button>
+									<button type="button" onclick="validateUser(this)" id="submitBtn" class="btn btn-rounded btn-info">Login</button>
 								</div>
 
 								<div class="m-account--footer">

@@ -20,5 +20,6 @@ public interface WebConstant {
 	public final String TRUST = "trust";
 	public final int ACCESS_TOKEN_VALIDITY_SECONDS = 1*60*60;
 	public final int FREFRESH_TOKEN_VALIDITY_SECONDS = 6*60*60;
+	public String ERROR_URL = "/error";
 	
 }

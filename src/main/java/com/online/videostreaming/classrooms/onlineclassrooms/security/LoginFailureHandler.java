@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,8 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
                     exception = new LockedException("Your account has been unlocked. Please try to login again.");
                 }
             }
+            
+            httpServletRequest.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, exception);
              
         }
      

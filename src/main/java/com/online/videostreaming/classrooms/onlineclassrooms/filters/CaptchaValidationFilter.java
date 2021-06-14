@@ -36,12 +36,10 @@ public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilte
 	private CaptchaService captchaService;
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 	private final String redirectUriParameter = "/login?error";
-	private AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-
 	public CaptchaValidationFilter(CaptchaService captchaService) {
 
 		this.captchaService = captchaService;
-		setUsernameParameter("username");
+		setUsernameParameter("userName");
 		super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
 	}
 

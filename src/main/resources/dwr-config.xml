@@ -33,5 +33,11 @@
 			<dwr:include method="deleteFolderAndBlogsById" />
 		</dwr:remote>
 	</bean>  
+	
+	<bean id="usersDwrUtils" class="com.online.videostreaming.classrooms.onlineclassrooms.dwrutils.UsersDwrUtils">
+		<dwr:remote javascript="usersDwrUtils">
+			<dwr:include method="deleteOrDeactivateUserById" />
+		</dwr:remote>
+	</bean>  
 
 </beans>
