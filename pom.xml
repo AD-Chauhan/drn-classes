@@ -9,21 +9,18 @@
 		<version>2.3.0.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.online.videostreaming.classrooms</groupId>
+	<groupId>com.online.videostreaming.classrooms.onlineclassrooms</groupId>
 	<artifactId>online-classrooms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>online-classrooms</name>
 	<description>Online Classrooms</description>
+	<packaging>war</packaging>
 	<properties>
 		<java.version>1.8</java.version>
 
 	</properties>
 	<dependencies>
-        <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -76,7 +73,6 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -96,11 +92,6 @@
 
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-
-		</dependency>
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -121,12 +112,7 @@
 		</dependency>
 
 
-<!-- https://mvnrepository.com/artifact/org.processing/core -->
-<dependency>
-    <groupId>org.processing</groupId>
-    <artifactId>core</artifactId>
-    <version>2.2.1</version>
-</dependency>
+
 
 
 		<dependency>
@@ -145,26 +131,23 @@
 			<artifactId>commons-collections</artifactId>
 			<version>3.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.15</version>
 		</dependency>
 
+
+
+
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-jose</artifactId>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-client</artifactId>
-		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -181,42 +164,16 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-core</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-			<version>2.1.0.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-jwt</artifactId>
-			<version>1.0.9.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>0.9.1</version>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.bytedeco/ffmpeg -->
-<dependency>
-    <groupId>org.bytedeco</groupId>
-    <artifactId>ffmpeg</artifactId>
-    <version>4.1.3-1.5</version>
-</dependency>
 		
+
 	</dependencies>
 
 	<build>
@@ -225,7 +182,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<includeSystemScope>true</includeSystemScope>
+					<finalName>online-classrooms</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
