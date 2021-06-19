@@ -1,16 +1,13 @@
 package com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 import io.jsonwebtoken.lang.Assert;
 @Service
 public class LoginPasswordService {
@@ -18,10 +15,21 @@ public class LoginPasswordService {
     private Map<String, String> secrets = new HashMap<>();
     private Map<String, String> keys = new HashMap<>();
 
-
-   
+    public final static String saltKey = "LnKrwxR";
+	public final static String securityKey = "kywx";
+	private final String user ;
+	private final String encodedString ;
 
     
+
+
+
+	public LoginPasswordService() {
+		this.user = "EVA:EVA@2020";
+		this.encodedString = saltKey+securityKey+Base64.getEncoder().encodeToString(user.getBytes());
+	}
+
+
 
 
 
@@ -67,14 +75,13 @@ public class LoginPasswordService {
 
 
     public Map<String, String> refreshSecrets() {
-        SecretKey key = MacProvider.generateKey(SignatureAlgorithm.HS256);
-        secrets.put(SignatureAlgorithm.HS256.getValue(), TextCodec.BASE64.encode(key.getEncoded()));
+    	
+        secrets.put(SignatureAlgorithm.HS256.getValue(), TextCodec.BASE64.encode(this.encodedString.replace(securityKey, "")));
         return secrets;
     }
     
     public Map<String, String> refreshKeys() {
-        SecretKey key = MacProvider.generateKey(SignatureAlgorithm.HS256);
-        keys.put(SignatureAlgorithm.HS256.getValue(), TextCodec.BASE64.encode(key.getEncoded()));
+        keys.put(SignatureAlgorithm.HS256.getValue(), TextCodec.BASE64.encode(this.encodedString.replace(saltKey, "")));
         return keys;
     }
 }

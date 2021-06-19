@@ -32,7 +32,7 @@ public class UserEntityDaoImpl extends HibernateSessionUtils implements UserEnti
 			Root<UsersEntity> root = criteria.from(UsersEntity.class);
 			return Optional.ofNullable(session.createQuery(
 	                 criteria.select(root).where(builder.equal(root.get("email"), username))
-	                 .where(builder.equal(root.get("enabled"), true)))
+	                 )
 			           .getSingleResult());
 			
 		} catch (Exception e) {

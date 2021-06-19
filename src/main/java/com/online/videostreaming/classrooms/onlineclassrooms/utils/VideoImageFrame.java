@@ -17,24 +17,11 @@ import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
-import processing.core.PImage;
-/**
-   * Get image thumbnails
- * @author liuyazhuang
- *
- */
+
 public abstract class VideoImageFrame {
  
 	
-	private static final int DEFAULT_RANDOM_LENGTH = 10;
-	/**
-	  * Generate image thumbnails
-	  * @param filePath: video full path
-	  * @param targerFilePath: thumbnail storage directory
-	  * @param targetFileName: thumbnail file name
-	  * @param randomSize: the number of random numbers generated
-	 * @throws Exception
-	 */
+	
 	public static String randomGrabberFFmpegImage(String filePath, String targerFilePath, String targetFileName, int randomSize, String random) throws Exception {
 		String filename=null;
 		FFmpegFrameGrabber ff = FFmpegFrameGrabber.createDefault(filePath);
@@ -67,12 +54,6 @@ public abstract class VideoImageFrame {
 		return filename;
 	}
  
-	/**
-	  * Rotate the picture
-	  * @param src: image
-	  * @param angle: rotation angle
-	 * @return
-	 */
 	public static IplImage rotate(IplImage src, int angle) {
 		IplImage img = IplImage.create(400, 614, src.depth(), src.nChannels());
 		opencv_core.cvTranspose(src, img);
@@ -80,13 +61,6 @@ public abstract class VideoImageFrame {
 		return img;
 	}
  
-	/**
-	  * Generate thumbnails
-	  * @param f Frame object
-	 * @param targerFilePath 
-	 * @param targetFileName
-	 * @param index
-	 */
 	public static String  doExecuteFrame(Frame f, String targerFilePath, String targetFileName, int index,String random) {
 		if (null == f || null == f.image) {
 			return null;
@@ -106,12 +80,6 @@ public abstract class VideoImageFrame {
 		
 	}
  
-	/**
-	  * Randomly generate random number sets
-	  * @param baseNum: random seed
-	  * @param length: random number set length
-	  * @return: a collection of random numbers
-	 */
 	public static List<Integer> random(int baseNum, int length) {
 		List<Integer> list = new ArrayList<>(length);
 		while (list.size() < length) {

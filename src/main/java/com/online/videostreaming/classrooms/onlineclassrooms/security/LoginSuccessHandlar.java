@@ -9,15 +9,17 @@ import java.util.Map.Entry;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.provider.endpoint.DefaultRedirectResolver;
-import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -37,61 +39,77 @@ public class LoginSuccessHandlar extends SimpleUrlAuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		try {
-			EndUserDetails userDetails = (EndUserDetails) authentication.getPrincipal();
+		
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(authentication);
+		HttpSession session = request.getSession(true);
+		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+				SecurityContextHolder.getContext());
+		request.getSession().removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		
 
-		if (userDetails.getFailedAttempt() > 0) {
-			userService.resetFailedAttempts(userDetails.getEmail());
-		}
-		request.getSession().setAttribute("userDetails", userDetails);
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		authorities.forEach(authority -> {
-			if (authority.getAuthority().equals("ROLE_ADMIN")) {
-				
+		if (isAuthenticated()) {
+			try {
+				EndUserDetails userDetails = (EndUserDetails) authentication.getPrincipal();
 
-					Map<String, String> params = new HashMap<>();
-					for (Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-						params.put(entry.getKey(), entry.getValue()[0]);
-					}
+			if (userDetails.getFailedAttempt() > 0) {
+				userService.resetFailedAttempts(userDetails.getEmail());
+			}
+			request.getSession().setAttribute("userDetails", userDetails);
+			Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+			authorities.forEach(authority -> {
+				if (authority.getAuthority().equals("ROLE_ADMIN")) {
+					
 
+						Map<String, String> params = new HashMap<>();
+						for (Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+							params.put(entry.getKey(), entry.getValue()[0]);
+						}
+
+						try {
+							redirectStrategy.sendRedirect(request, response,
+									ServletUriComponentsBuilder.fromCurrentContextPath().path(redirectUrlAdmin).toUriString());
+							return;
+						} catch (IOException e) {
+							
+							e.printStackTrace();
+						}
+
+					
+				}else if (authority.getAuthority().equals("ROLE_USERS")){
+					
 					try {
 						redirectStrategy.sendRedirect(request, response,
-								ServletUriComponentsBuilder.fromCurrentContextPath().path(redirectUrlAdmin).toUriString());
+								ServletUriComponentsBuilder.fromCurrentContextPath().path(redirectUrlUsers).toUriString());
 						return;
 					} catch (IOException e) {
 						
 						e.printStackTrace();
 					}
-
+				}
 				
-			}else if (authority.getAuthority().equals("ROLE_USERS")){
 				
+				
+				
+			});
+			} catch (Exception e) {
+				e.printStackTrace();
 				try {
 					redirectStrategy.sendRedirect(request, response,
-							ServletUriComponentsBuilder.fromCurrentContextPath().path(redirectUrlUsers).toUriString());
-					return;
-				} catch (IOException e) {
-					
-					e.printStackTrace();
+							ServletUriComponentsBuilder.fromCurrentContextPath().path("/login").toUriString());
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
 			}
 			
-			
-			
-			
-		});
-		} catch (Exception e) {
-			e.printStackTrace();
-			try {
-				redirectStrategy.sendRedirect(request, response,
-						ServletUriComponentsBuilder.fromCurrentContextPath().path("/login").toUriString());
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
 		}
+		
 		
 
 
 	}
-
+	public boolean isAuthenticated() {
+		return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+	}
 }

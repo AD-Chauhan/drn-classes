@@ -96,7 +96,6 @@ public final class HttpSessionCsrfTokenRepository implements CsrfTokenRepository
 		String id = UUID.randomUUID().toString().replace("-", "");
 
         Date now = new Date();
-        Date exp = new Date(now.getTime() + (1000*600)); // 30 seconds
 		return Jwts.builder()
 	            .setId(id)
 	            .setIssuedAt(now)

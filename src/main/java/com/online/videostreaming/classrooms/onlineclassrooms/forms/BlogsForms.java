@@ -18,5 +18,6 @@ public class BlogsForms {
 	private String description;
 	private String executionTime;
 	private MultipartFile chapterFileName;
+	private String _csrf;
 	
 }

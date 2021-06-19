@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,14 +20,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.approval.ApprovalStore;
-import org.springframework.security.oauth2.provider.approval.InMemoryApprovalStore;
-import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
-import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -64,8 +54,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     CsrfTokenRepository jwtCsrfTokenRepository;
 	@Autowired
     CsrfSecretService secretService;
-	@Autowired
-	public OAuth2RequestFactory requestFactory;
+	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers( "/resources/**", "/resources/", "/admin/captchaImage", "/admin/captcha",
@@ -75,11 +64,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     
 	
-	@Bean
-	public ApprovalStore approvalStore() throws Exception {
-		InMemoryApprovalStore store = new InMemoryApprovalStore();
-		return store; 
-	}
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf(csrf->csrf.csrfTokenRepository(jwtCsrfTokenRepository));
@@ -98,7 +83,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.requestMatchers(requestMatchers -> requestMatchers
 						.mvcMatchers(LOGIN_URL, LOGOUT_URL,"/oauth/authorize", "/oauth/confirm_access", "/token_keys",
 								"/.well-known/*", "/oauth/token/.well-known/*", "/otp_authentication",
-								"/oauth/approval_page", "/admin/imgCaptcha", "/actuator/**")
+								"/oauth/approval_page", "/admin/imgCaptcha", "/actuator/**","/admin-dashboard","/upload-blogs","/view-blogs")
 						.requestMatchers(EndpointRequest.toAnyEndpoint()))
 				.authorizeRequests(authorize -> {
 					try {
@@ -109,9 +94,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 										"/admin/imgCaptcha", "/actuator/**")
 								.permitAll().requestMatchers(EndpointRequest.to("info", "health", "prometheus"))
 								.permitAll().anyRequest().authenticated().and().authenticationProvider(authProvider())
-								.httpBasic().disable().exceptionHandling()
-								.authenticationEntryPoint(restAuthenticationEntryPoint)//
-								.accessDeniedHandler(accessDeniedHandler());
+								.httpBasic().disable().exceptionHandling();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -128,13 +111,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 @Autowired
 	 private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-	@Bean
-	public AccessDeniedHandler accessDeniedHandler() {
-		
-		OAuth2AccessDeniedHandler  defaultAccessDeniedHandler=	new OAuth2AccessDeniedHandler();
-		defaultAccessDeniedHandler.setExceptionTranslator(loggingExceptionTranslator());
-		return defaultAccessDeniedHandler ;
-	}
+	
 
 	@Bean
 	public AuthenticationProvider authProvider() throws Exception {
@@ -182,23 +159,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return new LoginFailureHandler();
 	}
 
-	
-	
 
-	@Bean
-	public WebResponseExceptionTranslator loggingExceptionTranslator() {
-		return new DefaultWebResponseExceptionTranslator() {
-
-			@Override
-			public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
-				e.printStackTrace();
-				ResponseEntity<OAuth2Exception> responseEntity = super.translate(e);
-				HttpHeaders headers = new HttpHeaders();
-				headers.setAll(responseEntity.getHeaders().toSingleValueMap());
-				OAuth2Exception excBody = responseEntity.getBody();
-				return new ResponseEntity<>(excBody, headers, responseEntity.getStatusCode());
-			}
-		};
-	}
 
 }

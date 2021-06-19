@@ -15,10 +15,15 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,12 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.BlogUploadEntity;
-import com.online.videostreaming.classrooms.onlineclassrooms.entity.VideoUploadEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.BlogsForms;
 import com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl.RandomGeneratorImpl;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.BlogService;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.RandomGenerator;
-import com.online.videostreaming.classrooms.onlineclassrooms.utils.VideoImageFrame;
 @Controller
 public class AdminController {
 	private static final int DEFAULT_RANDOM_LENGTH = 10;
@@ -44,7 +47,14 @@ public class AdminController {
 	@RequestMapping(value = "/admin-dashboard", method = RequestMethod.GET)
 	public String loginPage(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+		
+		
+		
 		return "admin-dashboard";
 
 	}
@@ -55,6 +65,11 @@ public class AdminController {
 	@RequestMapping(value = "/upload-blogs", method = RequestMethod.GET)
 	public String blogGetPage(@ModelAttribute("blogsForms") BlogsForms blogsForms,Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
 
 		return "upload-blogs";
 
@@ -64,18 +79,37 @@ public class AdminController {
 	@RequestMapping(value = "/view-blogs", method = RequestMethod.GET)
 	public String viewBlogGetPage(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+		
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
 		List<BlogUploadEntity> finalList=blogService.getAllUploadedBlogs();
 		model.addAttribute("finalList", finalList);
-		
+		}
 		return "view-blogs";
 
 	}
 	
-	
+	@PreAuthorize ("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/upload-blogs", method = RequestMethod.POST)
 	public String blogPostPage(@ModelAttribute("blogsForms") BlogsForms blogsForms,Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
+		
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+		
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+		
 		if (blogsForms.getChapterFileName() != null && !blogsForms.getChapterFileName().isEmpty()) {
             String random=null;
 			randomGenerator=new RandomGeneratorImpl(DEFAULT_RANDOM_LENGTH);
@@ -181,6 +215,9 @@ public class AdminController {
 			
 			
 		}
+		
+		
+	}
 		return "upload-blogs";
 
 	}

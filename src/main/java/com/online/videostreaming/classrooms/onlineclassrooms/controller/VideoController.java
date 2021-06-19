@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -41,7 +40,6 @@ import com.online.videostreaming.classrooms.onlineclassrooms.forms.VideoUploadFo
 import com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl.RandomGeneratorImpl;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.RandomGenerator;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.VideoGalleryService;
-import com.online.videostreaming.classrooms.onlineclassrooms.utils.AESEncryptDecrypt;
 import com.online.videostreaming.classrooms.onlineclassrooms.utils.VideoImageFrame;
 
 @Controller
@@ -169,6 +167,10 @@ public class VideoController {
 		           }
 		        } catch (IOException e) {
 		            e.printStackTrace();
+		        }catch(org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException e1) {
+		        	
+		        	  model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
+			                    "You un-successfully not uploaded "+ e1.getMessage() ); 
 		        }
 			
 			
