@@ -21,12 +21,9 @@ function getCourseCategory(value){
 		if(response!=null){
 			
 			
-			 $.each(response, function(responsekey, responsevalue) {
-				 
-				
-				 $("#courseCategory").append($("<option />").val(responsekey).text(responsevalue));
-				 
-			 });
+			dwr.util.removeAllOptions('courseCategory');
+			$("#courseCategory").append("<option value=''>Select</option>");
+			dwr.util.addOptions('courseCategory',response);
 			
 		}
 		

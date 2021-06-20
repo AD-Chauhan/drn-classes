@@ -129,6 +129,9 @@ response.setDateHeader ("Expires", -1);
                         <li> <a href="<%=request.getContextPath()%>/video-details"> <i class="fa fa-tasks"></i> <span>View & Edit Videos</span> </a> </li>
                          <li> <a href="<%=request.getContextPath()%>/upload-blogs"> <i class="fa fa-tasks"></i> <span>Upload Blogs</span> </a> </li>
                         <li> <a href="<%=request.getContextPath()%>/view-blogs"> <i class="fa fa-tasks"></i> <span>View & Edit Blogs</span> </a> </li>
+                        <li> <a href="<%=request.getContextPath()%>/upload-exam-meterials"> <i class="fa fa-tasks"></i> <span>Upload Question Sheets</span> </a> </li>
+                        <li> <a href="<%=request.getContextPath()%>/view-exam-question-answer-metrials"> <i class="fa fa-tasks"></i> <span>View & Edit Exam Materials</span> </a> </li>
+                        <li> <a href="<%=request.getContextPath()%>/logout"> <i class="fa fa-tasks"></i> <span>Logout</span> </a> </li>
                         
                         
                        

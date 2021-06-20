@@ -63,5 +63,15 @@
   <definition name="error-page" template="/layout/Login/login-layout.jsp">
   		<put-attribute name="body" value="/pages/Error/errors.jsp" /> 
   	</definition>
+  <definition name="upload-exam-answer-meterials" template="/layout/Users/layout.jsp">
+  		<put-attribute name="body" value="/pages/Answer/upload-exam-answer-meterials.jsp" /> 
+  	</definition>	
   	
+  	<definition name="upload-exam-question-meterials" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Questions/upload-exam-question-meterials.jsp" /> 
+  	</definition>
+  	
+  	<definition name="view-edit-question-answer-page" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Questions/view-edit-question-answer-page.jsp" /> 
+  	</definition>
 </tiles-definitions>

@@ -301,9 +301,18 @@ img.wp-smiley, img.emoji {
 																		<li class="dropdown menu-item-310 aligned-left"><a
 																			href="<%=request.getContextPath()%>/blog-details">Blog
 																		</a></li>
+																		
+																		<li class="dropdown menu-item-310 aligned-left"><a
+																			href="<%=request.getContextPath()%>/exam-answer-metrials">Examination Materials
+																		</a></li>
+																		
+																		
 																		<li class="menu-item-311 aligned-left"><a
 																			href="<%=request.getContextPath()%>/contact-details">Contact
 																				Us</a></li>
+																				
+																		<li class="menu-item-311 aligned-left"><a
+																			href="<%=request.getContextPath()%>/logout">Logout</a></li>		
 																				
 																				
 																	</ul>

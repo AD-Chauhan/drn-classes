@@ -28463,7 +28463,7 @@ body.home .vertical-wrapper.show-in-home .content-vertical {
 }
 
 .widget-search form>div.input-group {
-    width: 500px;
+    width: 100% !important;
     margin: 0 auto
 }
 

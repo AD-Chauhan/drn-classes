@@ -25,6 +25,9 @@
 		<dwr:remote javascript="videoDwrUtils">
 			<dwr:include method="deleteFolderAndVideoById" />
 			<dwr:include method="getCourseCategory" />
+			<dwr:include method="deleteFolderAndSheetsById" />
+			<dwr:include method="reSubmitAnswerSheet" /> 
+			<dwr:include method="getAllBatchOrClasses" />
 		</dwr:remote>
 	</bean>
 	

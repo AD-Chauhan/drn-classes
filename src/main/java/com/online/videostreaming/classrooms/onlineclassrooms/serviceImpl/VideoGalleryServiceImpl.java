@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +54,8 @@ public class VideoGalleryServiceImpl implements VideoGalleryService {
 				{
 					File videofile = new File(context.getRealPath(obj.getOriginalPath())+obj.getOriginalFileName());
 					File thumbfile = new File(context.getRealPath(obj.getThumbnailPath())+obj.getThumbnailFileName());
+					File dir = new File(context.getRealPath("/resources/VideosUploads/"+obj.getFolderId()+"/Videos/"));
+					File dir2 = new File(context.getRealPath("/resources/VideosUploads/"+obj.getFolderId()+"/Thumbnail/"));
 					
 					if(videofile.exists())
 					{
@@ -63,6 +66,8 @@ public class VideoGalleryServiceImpl implements VideoGalleryService {
 					{
 						thumbfile.delete();
 					}
+					FileUtils.deleteDirectory(dir);
+					FileUtils.deleteDirectory(dir2);
 				}
 			}
 		}

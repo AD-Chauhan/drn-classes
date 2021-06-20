@@ -5,7 +5,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/security/tags"
 	prefix="sec"%>
-	
+	<script type='text/javascript'
+	src='${pageContext.request.contextPath}/drnclasses/engine.js'></script>
+<script type='text/javascript'
+	src="${pageContext.request.contextPath}/drnclasses/util.js"> </script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/drnclasses/interface/videoDwrUtils.js"></script>	
 <style type="text/css">
 [data-notify="container"][class*="alert-pastel-"] {
 	background-color: rgb(255, 255, 238);
@@ -213,7 +218,41 @@ $(document).ready(function(){
 
 
  
- 
+ function showHideFields(obj){
+	 
+	 var e=$(obj);
+	 
+	 if($(e).val()==1){
+		 dwr.util.removeAllOptions('batch'); 
+		$('#batchFormGroup').css('display','none');
+		$('#batchFormGroupHr').css('display','none');
+		
+	 }else if($(e).val()==2){
+		 $('#batchFormGroup').css('display','flex'); 
+		 $('#batchFormGroupHr').css('display','block');
+		 videoDwrUtils.getAllBatchOrClasses({callback:function(response){
+				
+				if(response!=null){
+						
+						    dwr.util.removeAllOptions('batch');
+							$("#batch").append("<option value=''>Select</option>");
+							dwr.util.addOptions('batch',response);
+				}
+				
+				
+			},
+			async : false
+			});
+		 
+	 }else{
+		 dwr.util.removeAllOptions('batch'); 
+			$('#batchFormGroup').css('display','none'); 
+			$('#batchFormGroupHr').css('display','none');
+		 
+	 }
+	 
+	 
+ }
 
 
 </script>
@@ -241,7 +280,7 @@ $(document).ready(function(){
 										offset: 20,
 										spacing: 10,
 										z_index: 1031,
-										delay: 5000,
+										delay: 10000,
 										timer: 1000,
 										url_target: '_blank',
 										mouse_over: null,
@@ -290,7 +329,7 @@ $(document).ready(function(){
 										offset: 20,
 										spacing: 10,
 										z_index: 1031,
-										delay: 5000,
+										delay: 10000,
 										timer: 1000,
 										url_target: '_blank',
 										mouse_over: null,
@@ -373,7 +412,7 @@ $(document).ready(function(){
 							<div class="form-group row required">
                              <span class="label-text col-md-2 col-form-label text-md-right">Role</span> 
 							        <div class="col-md-10 ">
-							        <form:select  class="form-control" path="userRole" id="userRole" name="userRole">
+							        <form:select  class="form-control" path="userRole" id="userRole" name="userRole" onchange="showHideFields(this)">
 							        <form:option value="">--Select--</form:option>
 							                       <c:forEach items="${roleList}" varStatus="index" var="record">
 											                  
@@ -393,22 +432,16 @@ $(document).ready(function(){
 							</div>
 							<hr>
 							
-							<div class="form-group row required">
+							<div class="form-group row required" id="batchFormGroup" style="display: none;">
 								<span class="label-text col-md-2 col-form-label text-md-right">Batch/Class</span>
 								<div class="col-md-10">
 									<form:select  class="form-control" path="batch" id="batch" name="batch">
 									    <form:option value="">--Select--</form:option>
-										<c:forEach items="${batch}" var="oblist" varStatus="count" >	
-																		
-										 <form:option value="${oblist.key}">${oblist.value}</form:option>								
-																		
-			                                                              
-			                                                              
-			                            </c:forEach>
+										
 									</form:select>
 								</div>
 							</div>
-							<hr>
+							<hr id="batchFormGroupHr">
 							<div class="form-group row">
 								<span class="label-text col-md-2 col-form-label text-md-right">Correspondence Address</span>
 								<div class="col-md-10">

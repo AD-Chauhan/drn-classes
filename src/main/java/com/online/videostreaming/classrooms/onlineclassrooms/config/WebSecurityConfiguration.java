@@ -74,7 +74,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.successHandler(authenticationSuccessHandler()).failureHandler(loginFailureHandler()))
 				.userDetailsService(this.endUserDetailsService)
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_URL))
-						.logoutSuccessHandler(logoutSuccessHandler)
+						.logoutSuccessHandler(logoutSuccessHandler())
 						.deleteCookies("SESSION", "JSESSIONID")
 						.defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
 								RequestUtils::isAjaxRequest)
@@ -104,8 +104,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-	 @Autowired
-	 private OnLogoutSuccessHandler logoutSuccessHandler; 
+	@Bean
+	public OnLogoutSuccessHandler logoutSuccessHandler() {
+		return new OnLogoutSuccessHandler();
+	}
 
 	
 	 @Autowired

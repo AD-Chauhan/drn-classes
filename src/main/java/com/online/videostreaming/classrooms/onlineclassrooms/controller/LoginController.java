@@ -73,8 +73,8 @@ public class LoginController {
 	public String registrationPagePost(Model model,@ModelAttribute("userRegistrationForm") UsersRegistrationForm userRegistrationForm, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
-		Optional<UsersEntity> usersEntity=userService.findUserByUserName(userRegistrationForm.getEmail());
-		if(usersEntity.isPresent()) {
+		Optional<UsersEntity> usersEntity=userService.findUserByUserName(userRegistrationForm.getEmail().trim());
+		if(usersEntity!=null) {
 			
 			model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY, "You un-successfully not registered user " + userRegistrationForm.getEmail()+ " Because this "
 					+ "this email already exist .Please choose another email id"); 
