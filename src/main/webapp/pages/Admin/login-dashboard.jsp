@@ -41,7 +41,7 @@
 		.15s;
 	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 	height: 82px;
-	max-width: 113% !important;
+	max-width: 98% !important;
 	margin-top: 10px !important;
 	margin-left: 2px !important;
 }
@@ -186,18 +186,20 @@ var pageContext='${pageContext.request.contextPath}';
 								</div>
 							</c:if>
 				<div class="col-md-6">
-					<div class="m-account--content-w">
-						<div class="m-account--content">
-							<div class="logo" style="margin-bottom: 52px !important;">
+					<div class="m-account--content-w" style="background-color: #ffffff !important;">
+						<div class="logo" style="margin-bottom: 299px !important; height: 100px !important;
+    margin-left: 0px !important;">
 								<img style="max-width: 100% !important;"
 									src="<%=request.getContextPath()%>/resources/img/logo.png"
-									alt="">
-
-							</div>
-
-
-
+									alt=""/>
+<label style="font-size: 46px;
+    text-align: center;
+    color: #1b2223;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 20px;">Prayagraj</label> 
 						</div>
+						
 					</div>
 
 				</div>
@@ -272,6 +274,7 @@ var pageContext='${pageContext.request.contextPath}';
 										</div>
 									</div>
 								</div>
+								
 								<div class="m-account--actions">
 									<a href="#" class="btn-link">Forgot Password?</a>
 									<button type="button" onclick="validateUser(this)" id="submitBtn" class="btn btn-rounded btn-info">Login</button>

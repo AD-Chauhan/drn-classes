@@ -9174,7 +9174,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     transition: all .2s ease-in-out
 }
 .login-account>li>span {
-    font-size: 14px;
+    font-size: 18px;
     padding: 19px 7px;
     font-weight: 700;
     position: relative;

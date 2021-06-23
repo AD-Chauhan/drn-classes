@@ -83,7 +83,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.requestMatchers(requestMatchers -> requestMatchers
 						.mvcMatchers(LOGIN_URL, LOGOUT_URL,"/oauth/authorize", "/oauth/confirm_access", "/token_keys",
 								"/.well-known/*", "/oauth/token/.well-known/*", "/otp_authentication",
-								"/oauth/approval_page", "/admin/imgCaptcha", "/actuator/**","/admin-dashboard","/upload-blogs","/view-blogs")
+								"/oauth/approval_page", "/admin/imgCaptcha", "/actuator/**","/admin-dashboard","/upload-blogs","/view-blogs","/home-page","/blog-details","/contact-details","/course-details"
+								,"/exam-answer-metrials")
 						.requestMatchers(EndpointRequest.toAnyEndpoint()))
 				.authorizeRequests(authorize -> {
 					try {

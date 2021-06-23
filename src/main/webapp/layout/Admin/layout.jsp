@@ -1,45 +1,34 @@
-<%
-request.setCharacterEncoding("UTF-8");
-response.setCharacterEncoding("UTF-8");
-response.setHeader("Cache-Control","no-cache");
-response.setHeader("Pragma","no-cache");
-response.setDateHeader ("Expires", -1);
-%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<%@ page import="java.util.Calendar" %>
- <%@ page import="java.util.Date" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.Date"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page contentType="text/html; charset=UTF-8"%>
 <%@page pageEncoding="UTF-8"%>
- 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-  
- <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-  
- <c:set var="lang" scope="request" value="${requestScope.locale.language}"/> 
- 
- 
- <html xmlns="http://www.w3.org/1999/xhtml"> 
- 
- 
-     <head>
-     
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <title>Dashboard - DAdmin</title>
-      <meta name="author" content="">
-      <meta name="description" content="">
-      <meta name="keywords" content="">
- 
-  
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700%7CMontserrat:400,500">
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en" class="no-outlines">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Dashboard - DAdmin</title>
+<meta name="author" content="">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700%7CMontserrat:400,500">
 <link rel="stylesheet" href="<c:url value="/resources/Admin/assets/css/bootstrap.min.css"/>">
 <link rel="stylesheet" href="<c:url value="/resources/Admin/assets/css/fontawesome-all.min.css"/>">
 <link rel="stylesheet" href="<c:url value="/resources/Admin/assets/css/jquery-ui.min.css"/>">
@@ -58,6 +47,108 @@ response.setDateHeader ("Expires", -1);
 <script src="<c:url value="/resources/Admin/assets/js/jquery.min.js"/>"></script>
 	<script src="<c:url value="/resources/Admin/assets/js/jquery-ui.min.js"/>"></script>
 	<script src="<c:url value="/resources/Admin/assets/js/bootstrap.bundle.min.js"/>"></script>
+<script src="<c:url value="/resources/Admin/js/bootstrap-notify.min.js"/>"></script>
+	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.js"/>"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<header class="navbar navbar-fixed">
+			<div class="navbar--header">
+				<a href="index.html" class="logo"> <img
+					src="<%=request.getContextPath()%>/resources/img/logo-white.png" style="height: 94px !important;
+    margin-top: -22px !important;
+    margin-left: 39px !important;" alt="">
+				</a> <a href="#" class="navbar--btn" data-toggle="sidebar"
+					title="Toggle Sidebar"> <i class="fa fa-bars"></i>
+				</a>
+			</div>
+			<a href="#" class="navbar--btn" data-toggle="sidebar"
+				title="Toggle Sidebar"> <i class="fa fa-bars"></i>
+			</a>
+			<div class="navbar--nav ml-auto">
+               <ul class="nav">
+                  
+                  <li class="nav-item dropdown nav--user online">
+                     <span style="color: #e16123;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-right: 43px;" id="loggedUser"></span> 
+                     
+                  </li>
+               </ul>
+            </div>
+			
+		</header>
+		<aside class="sidebar" data-trigger="scrollbar">
+			
+			<div class="sidebar--nav">
+				<ul>
+					<li>
+						<ul>
+							<li><a href="<%=request.getContextPath()%>/admin-dashboard"> <i class="fa fa-home"></i> <span>Dashboard</span>
+							</a></li>
+							<li><a href="#"> <i class="fa fa-th"></i> <span>Users Registration</span>
+							</a>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/register-page">Add</a></li>
+									<li><a href="<%=request.getContextPath()%>/edit-users-dashboard">View/Edit</a></li>
+									
+								</ul></li>
+								
+								
+							<li><a href="#"> <i class="fa fa-th"></i> <span>Courses Videos</span>
+							</a>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/upload-video">Add</a></li>
+									<li><a href="<%=request.getContextPath()%>/video-details">View/Edit</a></li>
+									
+								</ul></li>
+								
+								
+								<li><a href="#"> <i class="fa fa-th"></i> <span>Blogs</span>
+							</a>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/upload-blogs">Add</a></li>
+									<li><a href="<%=request.getContextPath()%>/view-blogs">View/Edit</a></li>
+									
+								</ul></li>
+								
+								<li><a href="#"> <i class="fa fa-th"></i> <span>Question Sheet</span>
+							</a>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/upload-exam-meterials">Add</a></li>
+									<li><a href="<%=request.getContextPath()%>/view-exam-question-sheet">View/Edit</a></li>
+									
+								</ul></li>	
+								
+								<li><a href="#"> <i class="fa fa-th"></i> <span>Answer Sheet</span>
+							</a>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/view-exam-question-answer-metrials">View/Edit</a></li>
+									
+									
+								</ul></li>
+								
+							<li><a href="<%=request.getContextPath()%>/logout"> <i class="fa fa-home"></i> <span>Logout</span>
+							</a></li>	
+									
+						</ul>
+					</li>
+					
+					
+				</ul>
+			</div>
+			
+		</aside>
+		<main class="main--container">
+
+
+			<tiles:insertAttribute name="body" />
+
+
+		</main>
+	</div>
+	
 	<script src="<c:url value="/resources/Admin/assets/js/perfect-scrollbar.min.js"/>"></script>
 	<script src="<c:url value="/resources/Admin/assets/js/jquery.sparkline.min.js"/>"></script>
 	<script src="<c:url value="/resources/Admin/assets/js/raphael.min.js"/>"></script>
@@ -73,85 +164,44 @@ response.setDateHeader ("Expires", -1);
 	<script src="<c:url value="/resources/Admin/assets/js/datatables.min.js"/>"></script>
 	<script src="<c:url value="/resources/Admin/assets/js/main.js"/>"></script>
 	
-	<script src="<c:url value="/resources/Admin/js/bootstrap-notify.min.js"/>"></script>
-	
-	
-	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.all.js"/>"></script>
-	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.all.min.js"/>"></script>
-	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.js"/>"></script>
-	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.locales.js"/>"></script>
-	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.locales.min.js"/>"></script>
-	<script src="<c:url value="/resources/Admin/js/bootbox/bootbox.min.js"/>"></script>
- 	
- 	</head>
-<body >
-<div class="wrapper">
-         <header class="navbar navbar-fixed">
-            <div class="navbar--header"> <a href="index.html" class="logo">
-             <img src="<%=request.getContextPath()%>/resources/img/logo.png" alt=""> </a> 
-            <a href="#" class="navbar--btn" data-toggle="sidebar" title="Toggle Sidebar"> <i class="fa fa-bars"></i> </a> </div>
-            
-            
-            <div class="navbar--nav ml-auto">
-               <ul class="nav">
-                  
-                  <li class="nav-item dropdown nav--user online">
-                     <a href="#" class="nav-link" > <span>Login User Name</span>  </a>
-                     
-                  </li>
-                  <li class="nav-item dropdown nav--user online">
-                    
-                     <c:set var="today" value="<%=new Date()%>"/>	
-                     <span>LAST LOGIN TIME :<fmt:formatDate type="date" value="${today}" pattern="dd-MM-yyyy HH:mm:ss"/></span>
-                     
-                  </li>
-               </ul>
-            </div>
-         </header>
-         <aside class="sidebar" data-trigger="scrollbar">
-            
-            <div class="sidebar--nav">
-               <ul>
-                  <li>
-                     <ul>
-                        <li class="active"> <a href="<%=request.getContextPath()%>/admin-dashboard"> <i class="fa fa-home"></i> <span>Dashboard</span> </a> </li>
-                        
-                     </ul>
-                  </li>
-                 
-                  <li>
-                    
-                     <ul>
-                       
-                        <li> <a href="<%=request.getContextPath()%>/register-page"> <i class="fa fa-tasks"></i> <span>Users Registration</span> </a> </li>
-                         <li> <a href="<%=request.getContextPath()%>/edit-users-dashboard"> <i class="fa fa-tasks"></i> <span>View & Edit Users</span> </a> </li>
-                        <li> <a href="<%=request.getContextPath()%>/upload-video"> <i class="fa fa-tasks"></i> <span>Upload Videos</span> </a> </li>
-                        <li> <a href="<%=request.getContextPath()%>/video-details"> <i class="fa fa-tasks"></i> <span>View & Edit Videos</span> </a> </li>
-                         <li> <a href="<%=request.getContextPath()%>/upload-blogs"> <i class="fa fa-tasks"></i> <span>Upload Blogs</span> </a> </li>
-                        <li> <a href="<%=request.getContextPath()%>/view-blogs"> <i class="fa fa-tasks"></i> <span>View & Edit Blogs</span> </a> </li>
-                        <li> <a href="<%=request.getContextPath()%>/upload-exam-meterials"> <i class="fa fa-tasks"></i> <span>Upload Question Sheets</span> </a> </li>
-                        <li> <a href="<%=request.getContextPath()%>/view-exam-question-answer-metrials"> <i class="fa fa-tasks"></i> <span>View & Edit Exam Materials</span> </a> </li>
-                        <li> <a href="<%=request.getContextPath()%>/logout"> <i class="fa fa-tasks"></i> <span>Logout</span> </a> </li>
-                        
-                        
-                       
-                     </ul>
-                  </li>
-                
-               </ul>
-            </div>
-            
-         </aside>
-         <main class="main--container">
-				
-		<tiles:insertAttribute name="body"/>
-			<footer class="main--footer main--footer-light">
-               <p>Copyright &copy; <a href="#">D.R.N.CLASSES</a>. All Rights Reserved.</p>
-            </footer>	
-				 </main>
-      </div>
-      	
+	<script type="text/javascript">
+
+var loggedUser = '<%=(String)session.getAttribute("loggedUser") %>';
+$(function(){
+	  
+    $("#loggedUser").text(loggedUser);
+
+});
+</script>
+
+ 
 </body>
- 
- </html>
- 
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -18,8 +18,8 @@ response.setDateHeader("Expires", -1);
 <%@ page import="java.util.Calendar"%>
 <%@page contentType="text/html; charset=UTF-8"%>
 <%@page pageEncoding="UTF-8"%>
-<%@ page import="java.util.Date" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.util.Date"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -227,11 +227,96 @@ img.wp-smiley, img.emoji {
 	text-align: right;
 }
 </style>
+
 </head>
 <body
 	class="home page-template-default page page-id-288 wp-embed-responsive woocommerce-no-js header_transparent apus-body-loading body-footer-mobile has-header-sticky elementor-default elementor-page elementor-page-288">
 
+	<div class="apus-page-loading" style="display: none;">
+		<div class="apus-loader-inner" style=""></div>
+	</div>
+
 	<div id="wrapper-container" class="wrapper-container">
+
+		<div id="apus-mobile-menu" class="apus-offcanvas hidden-lg">
+			<div class="apus-offcanvas-body">
+				<div class="offcanvas-head bg-primary">
+					<a class="btn-toggle-canvas" data-toggle="offcanvas"> <span>Close</span>
+					</a>
+				</div>
+
+
+
+
+
+
+				<nav class="navbar navbar-offcanvas navbar-static" role="navigation">
+				<div class="navbar-collapse navbar-offcanvas-collapse">
+					<ul id="menu-main-menu" class="nav navbar-nav main-mobile-menu">
+						<li id="menu-item-312" class="has-submenu active menu-item-312"><a
+							href="<%=request.getContextPath()%>/home-page">Home</a></li>
+						<li id="menu-item-313" class="has-submenu menu-item-313"><a
+							href="<%=request.getContextPath()%>/course-details">Courses</a></li>
+						<li id="menu-item-484" class="has-submenu menu-item-484"><a
+							href="<%=request.getContextPath()%>/blog-details">Blogs</a></li>
+						<li id="menu-item-763" class="has-submenu menu-item-763"><a
+							href="<%=request.getContextPath()%>/exam-answer-metrials">Examination
+								Materials</a></li>
+						<li id="menu-item-311" class="menu-item-311"><a
+							href="<%=request.getContextPath()%>/contact-details">Contact
+								Us</a></li>
+
+						<li id="menu-item-311" class="menu-item-311"><a
+							href="<%=request.getContextPath()%>/logout">Logout</a></li>
+					</ul>
+				</div>
+				</nav>
+			</div>
+		</div>
+
+
+		<div class="over-dark"></div>
+		<div id="apus-header-mobile" class="header-mobile hidden-lg clearfix">
+			<div class="container">
+				<div class="row flex-middle">
+					<div class="text-center col-xs-6">
+						<div class="logo logo-theme">
+							<a href="<%=request.getContextPath()%>/home-page"> <img
+								src="<%=request.getContextPath()%>/resources/img/logo.png"></a>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="pull-right margin-left-15">
+							<a href="#navbar-offcanvas" class="btn-showmenu"></a>
+						</div>
+						
+					</div>
+				</div>
+				<div class="header-bottom-mobile clearfix">
+					<div class="flex-middle">
+						<div class="setting-account-content">
+							<div class="account-login">
+								<ul class="login-account">
+									<li class="icon-log"><span class="apus-user-login"><i
+											class="flaticon-user"></i></span></li>
+									<li><span class="apus-user-login wel-user" id="loggedUser"></span></li>
+                                   
+								</ul>
+
+								
+
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
 
 
 		<div id="apus-header "
@@ -301,20 +386,20 @@ img.wp-smiley, img.emoji {
 																		<li class="dropdown menu-item-310 aligned-left"><a
 																			href="<%=request.getContextPath()%>/blog-details">Blog
 																		</a></li>
-																		
+
 																		<li class="dropdown menu-item-310 aligned-left"><a
-																			href="<%=request.getContextPath()%>/exam-answer-metrials">Examination Materials
-																		</a></li>
-																		
-																		
+																			href="<%=request.getContextPath()%>/exam-answer-metrials">Examination
+																				Materials </a></li>
+
+
 																		<li class="menu-item-311 aligned-left"><a
 																			href="<%=request.getContextPath()%>/contact-details">Contact
 																				Us</a></li>
-																				
+
 																		<li class="menu-item-311 aligned-left"><a
-																			href="<%=request.getContextPath()%>/logout">Logout</a></li>		
-																				
-																				
+																			href="<%=request.getContextPath()%>/logout">Logout</a></li>
+
+
 																	</ul>
 																</div>
 																</nav>
@@ -326,34 +411,35 @@ img.wp-smiley, img.emoji {
 										</div>
 
 										<div
-											class="elementor-element elementor-element-5a41ec2 elementor-column elementor-col-50 elementor-top-column"
-											>
+											class="elementor-element elementor-element-5a41ec2 elementor-column elementor-col-50 elementor-top-column">
 											<div
 												class="elementor-column-wrap  elementor-element-populated">
 												<div class="elementor-widget-wrap">
 													<div
-														class="elementor-element elementor-element-ddf1b2f elementor-widget__width-auto elementor-widget elementor-widget-edumy_user_info"
-														>
+														class="elementor-element elementor-element-ddf1b2f elementor-widget__width-auto elementor-widget elementor-widget-edumy_user_info">
 														<div class="elementor-widget-container">
 															<div class="account-login">
-																<ul class="login-account white" style="color: #24e473; text-transform: uppercase;">
-																	<li class="icon-log"><span
-																		class="apus-user-login"><i
+																<ul class="login-account white"
+																	style="color: #24e473; text-transform: uppercase;">
+																	<li class="icon-log"><span class="apus-user-login"><i
 																			class="flaticon-user"></i></span></li>
-																	<li><span
-																		class="apus-user-login wel-user">Login User Name</span></li>
-																	
+																	<li><span class="apus-user-login wel-user"
+																		id="loggedUser"></span></li>
+
 																</ul>
-																<ul class="login-account white" style="color: #24e473; text-transform: uppercase;">
-																	<c:set var="today" value="<%=new Date()%>"/>	
-																	<li><span
-																		class="apus-user-login wel-user">LAST LOGIN TIME : <fmt:formatDate type="date" value="${today}" pattern="dd-MM-yyyy HH:mm:ss"/></span></li>	
-																	
+																<ul class="login-account white"
+																	style="color: #24e473; text-transform: uppercase;">
+																	<c:set var="today" value="<%=new Date()%>" />
+																	<li><span class="apus-user-login wel-user">LAST
+																			LOGIN TIME : <fmt:formatDate type="date"
+																				value="${today}" pattern="dd-MM-yyyy HH:mm:ss" />
+																	</span></li>
+
 																</ul>
 															</div>
 														</div>
 													</div>
-													
+
 												</div>
 											</div>
 										</div>
@@ -615,6 +701,14 @@ var _wpmejsSettings = {"pluginPath":"\/js\/","classPrefix":"mejs-","stretching":
 	<script type='text/javascript'
 		src="<c:url value="/resources/js/vimeo.min.js?ver=4.2.6-78496d1"/>"></script>
 
+	<script type="text/javascript">
 
+var loggedUser = '<%=(String) session.getAttribute("loggedUser")%>';
+$(function(){
+	  
+    $("#loggedUser").text(loggedUser);
+
+});
+</script>
 </body>
 </html>

@@ -14,6 +14,7 @@ import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.repository
 import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.service.UserService;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.UsersEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.UsersRole;
+import com.online.videostreaming.classrooms.onlineclassrooms.enums.Batch;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.UsersRegistrationForm;
 @Service
 public class UserServiceImpl implements UserService {
@@ -128,7 +129,7 @@ public class UserServiceImpl implements UserService {
 				registeredUsers.setMiddleName(objects.getMiddleName());
 				registeredUsers.setLastName(objects.getLastName());
 				registeredUsers.setEmail(objects.getEmail());
-				registeredUsers.setBatch(objects.getBatch());
+				registeredUsers.setBatch(objects.getBatch()!=null?Batch.mappings.get(Integer.parseInt(objects.getBatch())):"ADMIN USER");
 				registeredUsers.setFatherName(objects.getFatherName());
 				registeredUsers.setMotherName(objects.getMotherName());
 				registeredUsers.setUserRole(objects.getRoles().get(0).getRoleId());

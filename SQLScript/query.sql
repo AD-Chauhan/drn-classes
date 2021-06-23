@@ -172,3 +172,30 @@ CREATE TABLE public.drn_classes_student
    
     CONSTRAINT question_answer_entity_pkey PRIMARY KEY (questionanswer_id)
 )
+
+
+	CREATE SEQUENCE public.question_master_entity_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+	
+	CREATE TABLE public.question_master_entity
+(
+    question_id integer NOT NULL DEFAULT nextval('question_master_entity_seq'::regclass),
+    question_name character varying(500) COLLATE pg_catalog."default",
+    question_title character varying(500) COLLATE pg_catalog."default",
+    course_category character varying(500) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    batch character varying(500) COLLATE pg_catalog."default",
+    question_folder_path text COLLATE pg_catalog."default",
+    question_file_name text COLLATE pg_catalog."default",
+    question_file_ext character varying(500) COLLATE pg_catalog."default",
+    question_created_by character varying(500) COLLATE pg_catalog."default",
+    question_created_date timestamp without time zone NOT NULL DEFAULT now(),
+    question_folder_id character varying(100) COLLATE pg_catalog."default",
+   
+    CONSTRAINT question_master_entity_pkey PRIMARY KEY (question_id)
+)
+

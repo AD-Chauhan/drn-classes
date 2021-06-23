@@ -8,8 +8,14 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,14 +37,20 @@ public class HomeController {
 	private VideoGalleryService videoGalleryService;
 	@Autowired
 	private BlogService blogService;
+	@PreAuthorize ("hasRole('ROLE_USERS')")
 	@RequestMapping(value = "/home-page", method = RequestMethod.GET)
 	public String servicesMigration(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
 		
-		System.out.println(request.getRequestURL());
-		System.out.println(request.getRequestURI());
-		System.out.println(request.getContextPath());
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+		
 		List<VideoUploadEntity> finallist=videoGalleryService.getAllUploadedVideos();
 		if(finallist!=null && !finallist.isEmpty()) {
 			
@@ -59,7 +71,7 @@ public class HomeController {
 		}
 		List<BlogUploadEntity> finalList=blogService.getAllUploadedBlogsByLimit();
 		model.addAttribute("record", finalList);
-		
+		}
 		return "home-page";
 
 	}
@@ -99,34 +111,57 @@ public class HomeController {
 		return  sortedMemberMapKeyByName;
 	}
 	
-	
+	@PreAuthorize ("hasRole('ROLE_USERS')")
 	@RequestMapping(value = "/blog-details", method = RequestMethod.GET)
 	public String blogDetails(@ModelAttribute("videoUploadForm") VideoUploadForm videoUploadForm, Model model,
 			HttpServletRequest request, HttpServletResponse response, RedirectAttributes re, BindingResult result)
 			throws Exception {
-
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+		
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
 		List<BlogUploadEntity> finalList=blogService.getAllUploadedBlogsByLimit();
 		model.addAttribute("finalList", finalList);
-		
+		}
 		return "blog-details";
 
 	}
-	
+	@PreAuthorize ("hasRole('ROLE_USERS')")
 	@RequestMapping(value = "/contact-details", method = RequestMethod.GET)
 	public String contactDetails(@ModelAttribute("videoUploadForm") VideoUploadForm videoUploadForm, Model model,
 			HttpServletRequest request, HttpServletResponse response, RedirectAttributes re, BindingResult result)
 			throws Exception {
 
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+		
 		
 		
 		return "contact-details";
 
 	}
-	
+	@PreAuthorize ("hasRole('ROLE_USERS')")
 	@RequestMapping(value = "/course-details", method = RequestMethod.GET)
 	public String courseDetails(@ModelAttribute("videoUploadForm") VideoUploadForm videoUploadForm, Model model,
 			HttpServletRequest request, HttpServletResponse response, RedirectAttributes re, BindingResult result)
 			throws Exception {
+		HttpSession session =request.getSession(true);
+		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+		
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
 		List<VideoUploadEntity> finallist=videoGalleryService.getAllUploadedVideos();
 		if(finallist!=null && !finallist.isEmpty()) {
 			
@@ -146,7 +181,7 @@ public class HomeController {
 			
 		}
 		
-		
+		}
 		return "course-details";
 
 	}

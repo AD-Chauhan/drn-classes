@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.online.videostreaming.classrooms.onlineclassrooms.dao.QuestionAnswerDao;
-import com.online.videostreaming.classrooms.onlineclassrooms.entity.BlogUploadEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionAnswerEntity;
+import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionMasterEntity;
 @Service
 public  class QuestionAnswerServiceImpl
 		implements com.online.videostreaming.classrooms.onlineclassrooms.services.QuestionAnswerService {
@@ -21,7 +21,7 @@ public  class QuestionAnswerServiceImpl
 	   @Autowired
 	    ServletContext context;
 	@Override
-	public int uploadQuestionFile(QuestionAnswerEntity questionAnswerEntity) throws Exception {
+	public int uploadQuestionFile(QuestionMasterEntity questionAnswerEntity) throws Exception {
 		return questionAnswerDao.uploadQuestionFile(questionAnswerEntity);
 	}
 
@@ -103,6 +103,16 @@ public  class QuestionAnswerServiceImpl
 	public String reSubmitAnswerSheet(String answerFolderId) throws Exception {
 		
 		return questionAnswerDao.reSubmitAnswerSheet(answerFolderId);
+	}
+
+	@Override
+	public List<QuestionMasterEntity> getAllUploadedQuestions() throws Exception {
+		return questionAnswerDao.getAllUploadedQuestions();
+	}
+
+	@Override
+	public Optional<QuestionMasterEntity> downloadQuestionSheets(String folderId, String action) throws Exception {
+		return questionAnswerDao.getQuestionDetailsByFolderId(folderId, action);
 	}
 	
 	

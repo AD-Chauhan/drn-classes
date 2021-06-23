@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -52,7 +53,17 @@ public class LoginSuccessHandlar extends SimpleUrlAuthenticationSuccessHandler {
 		if (isAuthenticated()) {
 			try {
 				EndUserDetails userDetails = (EndUserDetails) authentication.getPrincipal();
-
+                if(!StringUtils.isEmpty(userDetails.getMiddleName())) {
+                	
+                	session.setAttribute("loggedUser",new StringBuilder().append(userDetails.getFirstName()).append(" ").append(userDetails.getMiddleName()).append(" ").append(userDetails.getLastName()).toString().toUpperCase());
+                	
+                	
+                }else {
+                	
+                	session.setAttribute("loggedUser",new StringBuilder().append(userDetails.getFirstName()).append(" ").append(userDetails.getLastName()).toString().toUpperCase());
+                	
+                }
+				
 			if (userDetails.getFailedAttempt() > 0) {
 				userService.resetFailedAttempts(userDetails.getEmail());
 			}

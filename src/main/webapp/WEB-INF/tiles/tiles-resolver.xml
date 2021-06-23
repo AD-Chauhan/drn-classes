@@ -74,4 +74,9 @@
   	<definition name="view-edit-question-answer-page" template="/layout/Admin/layout.jsp">
   		<put-attribute name="body" value="/pages/Questions/view-edit-question-answer-page.jsp" /> 
   	</definition>
+  	
+  	
+  	<definition name="view-exam-question-sheet" template="/layout/Admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/Questions/view-exam-question-sheet.jsp" /> 
+  	</definition>
 </tiles-definitions>

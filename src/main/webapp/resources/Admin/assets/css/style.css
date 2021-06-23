@@ -30,10 +30,8 @@ body.page-light {
 }
 
 .nav>li>a>img, img {
-	max-width: 48%;
-    height: auto;
-    margin-top: -16px;
-    margin-left: 55px;
+	max-width: 100%;
+	height: auto
 }
 
 ::-moz-selection {
@@ -167,7 +165,7 @@ label+label {
 .label-text {
 	display: inline-block;
 	margin-bottom: 8px;
-	color: #e16123;
+	color: #696969;
 	font-weight: 700
 }
 
@@ -2871,7 +2869,7 @@ tr:first-child>td>.fc-day-grid-event {
 	min-height: 100%;
 	padding: 60px 30px;
 	color: #fff;
-	background-color: #ffffff;
+	background-color: #acacac;
 	-ms-flex-pack: center;
 	-webkit-box-pack: center;
 	justify-content: center;
@@ -5922,21 +5920,7 @@ li.list-group-item:first-child {
 	white-space: nowrap
 }
 
-.navbar--nav .nav--user:before {
-	content: " ";
-	position: absolute;
-	top: 57px;
-	left: 52px;
-	width: 10px;
-	height: 10px;
-	background-color: none;
-	border: 2px solid #f6f6f6;
-	border-radius: 50%;
-	opacity: 0;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-	-webkit-transition: opacity .35s;
-	transition: opacity .35s
-}
+
 
 .navbar--nav .nav--user img {
 	width: 50px
@@ -6001,7 +5985,7 @@ li.list-group-item:first-child {
 	bottom: 0;
 	width: 270px;
 	margin-left: 0;
-	background-color: #ffffff;
+	background-color: #1c2324;
 	box-shadow: 3px 0 5px rgba(0, 0, 0, .05);
 	-webkit-transition: margin .35s cubic-bezier(.99, 0, .5, .99), left .25s
 		cubic-bezier(.99, 0, .5, .99);
@@ -6079,7 +6063,7 @@ li.list-group-item:first-child {
 
 .sidebar--nav, .sidebar--nav a {
 	position: relative;
-	padding: 0px 0 21px;
+	padding: 45px 0 21px;
 	z-index: 0
 }
 
@@ -6095,7 +6079,7 @@ li.list-group-item:first-child {
 }
 
 .sidebar--nav>ul>li+li {
-	margin-top: -16px
+	margin-top: 35px
 }
 
 .sidebar--nav>ul>li+.is-dropdown {
@@ -6115,17 +6099,16 @@ li.list-group-item:first-child {
 
 .sidebar--nav ul ul a {
 	padding: 6px 20px 7px;
-	color: #b13b0f;
-    font-weight: 700 !important;
+	color: #999;
+	font-weight: 400;
 	text-transform: none
 }
 
 .sidebar--nav ul ul .active>a, .sidebar--nav ul ul .active>a:after,
 	.sidebar--nav ul ul .active>a:before, .sidebar--nav ul ul .open>a,
 	.sidebar--nav ul ul a:hover {
-	color: #b13b0f;
-    background-color: #ffffff;
-    font-weight: 700 !important;
+	color: #fff;
+	background-color: #232929
 }
 
 .sidebar--nav .is-dropdown>a:after, .sidebar--nav .is-dropdown>a:before

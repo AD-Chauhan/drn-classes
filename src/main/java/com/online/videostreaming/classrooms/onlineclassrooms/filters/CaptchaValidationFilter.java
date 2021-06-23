@@ -72,7 +72,7 @@ public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilte
 		if (captchaAnswer != null || !"".equals(captchaAnswer)) {
 			Boolean isValid = captchaService.validateCaptchaCode(request, "CAPTCHA_KEY" + request.getSession().getId(),
 					captchaAnswer, CaptchaType.IMG);
-			if (!isValid) {
+			if (isValid) {
 				SecurityContextHolder.clearContext();
 				try {
 					this.CaptchaError(request, response, new CaptchaAuthenticationException(
