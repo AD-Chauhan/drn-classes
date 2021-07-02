@@ -173,39 +173,128 @@ function reSubmitAnswerSheet(answerFolderId){
 	});
 	
 }
-
+function getCourseCategory(value){
+	
+	videoDwrUtils.getCourseCategory(parseInt(value),{callback:function(response){
+		
+		if(response!=null){
+				
+				    dwr.util.removeAllOptions('courseCategory');
+					$("#courseCategory").append("<option value=''>By Course Category</option>");
+					dwr.util.addOptions('courseCategory',response);
+		}
+		
+		
+	},
+	async : false
+	});	
+	
+}
 
 </script>
-
-
 <section class="main--content">
-
 	<div class="panel">
-		<div class="records--list" data-title="Orders Listing">
-			<table id="recordsListView" width="100%">
-				<thead>
-					<tr>
-						<th>SR No.</th>
-						<th>Question Sheet Title</th>
-						<th>Question Sheet Name</th>
-						<th>Batch</th>
-						<th>Course Category</th>
-						<th>Question Sheet Uploaded Date</th>
-						<th>Question Sheet Uploaded By</th>
-						<th>Is Answered</th>
-						<th>Answer Sheet Uploaded Date</th>
-						<th>Question Sheet Uploaded By</th>
-						<th>Question Sheet Delete</th>
-						<th>Question Sheet Download</th>
-						<th>Answer Sheet Download</th>
-						<th>Re-Submit Answer Sheet</th>
-                        
-					</tr>
-				</thead>
-				<tbody>
-					<c:if test="${!empty finalList}">
+		<div class="records--header">
+			<div class="title ">
+				<h3 class="h3">
+					Search
+				</h3>
+				
+			</div>
+			<div class="actions">
+				<form:form action="view-exam-question-answer-metrials" class="search flex-wrap flex-md-nowrap" modelAttribute="searchForm" autocomplete="off"   method="post" id="searchForm">
+					<form:input type="text" class="form-control" path="keyword" name="keyword" id="keyword"
+						placeholder="By Keyword" required=""/> 
+						<form:select path="batch" name="batch" onchange="getCourseCategory(this.value)" id="batch"
+						 class="form-control">
+						<form:option value="-Select-" selected="">By Class</form:option>
+						<c:forEach items="${batch}" var="oblist" varStatus="count" >	
+										 <form:option value="${oblist.key}">${oblist.value}</form:option>								
+			                                                              
+			                            </c:forEach>
+					  </form:select>
+					  <form:select path="courseCategory" name="courseCategory" id="courseCategory"
+						 class="form-control">
+						<form:option value="-Select-" selected="">By Course Category</form:option>
+					  </form:select>
+					  
+					<button type="submit" class="btn btn-rounded">
+						<i class="fa fa-search"></i>
+					</button>
+				</form:form>
+				
+			</div>
+		</div>
+	</div>
+	<div class="panel">
+		<div class="records--list" data-title="Answer Sheet Listing">
+			<div id="recordsListView_wrapper"
+				class="dataTables_wrapper no-footer">
+				
+				<div class="table-responsive">
+					<table id="recordsListView" class="dataTable no-footer"
+						aria-describedby="recordsListView_info" role="grid">
+						<thead>
+							<tr role="row">
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="ID: activate to sort column ascending"
+									style="width: 79.1719px;">SR No.</th>
+								<th class="sorting" rowspan="1"
+									colspan="1" aria-label="Image" style="width: 61.9219px;">Question Sheet Title</th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Product Name: activate to sort column ascending"
+									style="width: 132.672px;">Question Sheet Name</th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Category: activate to sort column ascending"
+									style="width: 124.734px;">Batch</th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Price: activate to sort column ascending"
+									style="width: 62.8125px;">Course Category</th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Quantity: activate to sort column ascending"
+									style="width: 85.7188px;">Question Sheet Uploaded Date</th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Created Date: activate to sort column ascending"
+									style="width: 122.094px;">Question Sheet Uploaded By</th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Status: activate to sort column ascending"
+									style="width: 150.797px;">Is Answered</th>
+									
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Status: activate to sort column ascending"
+									style="width: 150.797px;">Answer Sheet Uploaded Date</th>'<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Status: activate to sort column ascending"
+									style="width: 150.797px;">Answer Sheet Uploaded By(Roll No.)<i class="fa fa-search" aria-hidden="true"></i></th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Status: activate to sort column ascending"
+									style="width: 150.797px;">Answer Sheet Uploaded By(Name)<i class="fa fa-search" aria-hidden="true"></i></th>
+								<th class="sorting" tabindex="0" aria-controls="recordsListView"
+									rowspan="1" colspan="1"
+									aria-label="Status: activate to sort column ascending"
+									style="width: 150.797px;">Answer Sheet Uploaded By(Email)<i class="fa fa-search" aria-hidden="true"></i></th>
+								<th class="not-sortable sorting_disabled" rowspan="1"
+									colspan="1" aria-label="Actions" style="width: 73.0781px;">Answer Sheet Download</th>
+									<th class="not-sortable sorting_disabled" rowspan="1"
+									colspan="1" aria-label="Actions" style="width: 73.0781px;">Re-Submit Answer Sheet</th>
+									<th class="not-sortable sorting_disabled" rowspan="1"
+									colspan="1" aria-label="Actions" style="width: 73.0781px;">Answer Sheet Delete</th>
+									
+							</tr>
+						</thead>
+						<tbody>
+						<c:if test="${!empty finalList}">
 						<c:forEach items="${finalList}" varStatus="index" var="record">
-							<tr>
+							<tr role="row" class="odd">
 								<td>${index.count}</td>
 								<td>${record.meterialTitle}</td>
 								<td>${record.meterialName}</td>
@@ -215,41 +304,49 @@ function reSubmitAnswerSheet(answerFolderId){
 								<td>${record.questionCreatedby}</td>
 								<td>${record.answerGiven}</td>
 								<td>${record.answerCreatedDate}</td>
+								<td>${record.answerCreatedByRollNo}</td>
+								<td>${record.answerCreatedByName}</td>
 								<td>${record.answerCreatedByEmail}</td>
-								<td><a style="font-size: 22px !important;cursor: pointer !important;" href="#" onclick="deleteFilesAndFolder(${record.questionAnswerId})"><i
-										class="fa fa-trash" aria-hidden="true"></i></a></td>
-								<td><a style="font-size: 27px !important;" href="<%=request.getContextPath()%>/downloadSheets?folderId=${record.questionFolderId}&action=QUESTION"
-									><i
-										class="fa fa-download" aria-hidden="true"></i></a></td>
-										<td><a style="font-size: 22px !important;cursor: pointer !important;" href="<%=request.getContextPath()%>/downloadSheets?folderId=${record.answerFolderId}&action=ANSWER"
-									><i
+								<td><a
+									style="font-size: 22px !important; cursor: pointer !important;"
+									href="<%=request.getContextPath()%>/downloadSheets?folderId=${record.answerFolderId}&action=ANSWER"><i
 										class="fa fa-download" aria-hidden="true"></i></a></td>
 								<c:choose>
-								
-								<c:when test="${record.answerGiven eq true}">
-								
-								<td><a style="font-size: 22px !important;cursor: pointer !important;" href="#"
-									onclick="reSubmitAnswerSheet('${record.answerFolderId}')"><i
-										class="fa fa-power-off" aria-hidden="true"></i></a>
-										</td>	
-								</c:when>
-								<c:otherwise>
-								
-								<td><a style="font-size: 15px !important;
-    font-weight: 700 !important; cursor: pointer !important;" href="#">ANSWER NOT SUBMITTED</a>
-										</td>	
-								</c:otherwise>
-								</c:choose>		
-									
 
+									<c:when test="${record.answerGiven eq true}">
+
+										<td><a
+											style="font-size: 22px !important; cursor: pointer !important;"
+											href="#"
+											onclick="reSubmitAnswerSheet('${record.answerFolderId}')"><i
+												class="fa fa-power-off" aria-hidden="true"></i></a></td>
+									</c:when>
+									<c:otherwise>
+
+										<td><a
+											style="font-size: 15px !important; font-weight: 700 !important; cursor: pointer !important;"
+											href="#">ANSWER NOT SUBMITTED</a></td>
+									</c:otherwise>
+								</c:choose>
+								<td><a
+									style="font-size: 22px !important; cursor: pointer !important;"
+									href="#"
+									onclick="deleteFilesAndFolder(${record.questionAnswerId})"><i
+										class="fa fa-trash" aria-hidden="true"></i></a></td>
 							</tr>
-						</c:forEach>
+							</c:forEach>
 					</c:if>
-				</tbody>
-			</table>
+							
+						</tbody>
+					</table>
+				</div>
+			
+			</div>
 		</div>
 	</div>
 </section>
+
+
 
 
 

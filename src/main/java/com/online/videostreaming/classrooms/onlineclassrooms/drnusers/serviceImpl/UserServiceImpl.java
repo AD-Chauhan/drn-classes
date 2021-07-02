@@ -1,12 +1,14 @@
 package com.online.videostreaming.classrooms.onlineclassrooms.drnusers.serviceImpl;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ import com.online.videostreaming.classrooms.onlineclassrooms.entity.UsersEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.UsersRole;
 import com.online.videostreaming.classrooms.onlineclassrooms.enums.Batch;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.UsersRegistrationForm;
+import com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl.RandomGeneratorImpl;
+import com.online.videostreaming.classrooms.onlineclassrooms.services.RandomGenerator;
+@Lazy
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -25,6 +30,9 @@ public class UserServiceImpl implements UserService {
 	/*
 	 * @Autowired private PasswordEncoder passwordEncoder;
 	 */
+   
+    private static final int DEFAULT_RANDOM_LENGTH = 10;
+	private RandomGenerator randomGenerator;
 	@Override
 	public Optional<UsersEntity> findUserByUserName(String username) throws Exception {
 		return userEntityDao.findUserByUserName(username);
@@ -64,6 +72,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int uploadUsersInformation(UsersRegistrationForm usersRegistrationForm) throws Exception {
 		
+		randomGenerator=new RandomGeneratorImpl(DEFAULT_RANDOM_LENGTH);
         List<UsersRole> roles = new ArrayList<>();
 		if(usersRegistrationForm.getUserRole()!=null ) {
 			
@@ -73,9 +82,9 @@ public class UserServiceImpl implements UserService {
 				UsersRole usersRole = new UsersRole();
 				usersRole.setRoleId(usersRegistrationForm.getUserRole());
 				usersRole.setCreatedOn(new Date());
-				usersRole.setCreatedBy("ADMIN");
+				usersRole.setCreatedBy(usersRegistrationForm.getCreatedBy());
 				usersRole.setUpdatedOn(new Date());
-				usersRole.setUpdatedBy("ADMIN");
+				usersRole.setUpdatedBy(usersRegistrationForm.getCreatedBy());
 				usersRole.setUpdatedIp("127.0.0.0");
 				usersRole.setEnabled(true);
 				roles.add(usersRole);
@@ -96,7 +105,16 @@ public class UserServiceImpl implements UserService {
 		usersEntity.setUserPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(usersRegistrationForm.getUserPassword()));
 		usersEntity.setPhone(usersRegistrationForm.getPhone());
 		usersEntity.setDeactivatedReason(null);
-		usersEntity.setBatch(usersRegistrationForm.getBatch());
+		usersEntity.setRollNo("DRN"+randomGenerator.generateToken());
+		if(roles.contains(1)) {
+			
+			usersEntity.setBatch(null);
+			
+		}else {
+			
+			usersEntity.setBatch(usersRegistrationForm.getBatch());
+		}
+		
 		usersEntity.setCorrespondanceAddress(usersRegistrationForm.getCorrespondanceAddress());
 		usersEntity.setPermanentAddress(usersRegistrationForm.getPermanentAddress());
 		usersEntity.setFatherName(usersRegistrationForm.getFatherName());
@@ -106,9 +124,9 @@ public class UserServiceImpl implements UserService {
 		usersEntity.setLockTime(new Date());
 		usersEntity.setRoles(roles);
 		usersEntity.setCreatedOn(new Date());
-		usersEntity.setCreatedBy("ADMIN");
+		usersEntity.setCreatedBy(usersRegistrationForm.getCreatedBy());
 		usersEntity.setUpdatedOn(new Date());
-		usersEntity.setUpdatedBy("ADMIN");
+		usersEntity.setUpdatedBy(usersRegistrationForm.getCreatedBy());
 		usersEntity.setUpdatedIp("127.0.0.0");
 		return userEntityDao.uploadUsersInformation(usersEntity);
 	}
@@ -140,6 +158,7 @@ public class UserServiceImpl implements UserService {
 				registeredUsers.setCreatedBy(objects.getCreatedBy());
 				registeredUsers.setEnabled(objects.isEnabled());
 				registeredUsers.setUserId(objects.getUserId());
+				registeredUsers.setRollNo(objects.getRollNo());
 				return registeredUsers;
 			}).collect(Collectors.toList());
 			

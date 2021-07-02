@@ -131,7 +131,16 @@
 									</div>
 								</div>
 							</c:if>
-				
+				<table>
+<c:forEach items="${finalList}" var="element"> 
+  <tr>
+    <td>${element.firstName}</td>
+    <td>${element.lastName}</td>
+    <td>${element.email}</td>
+       
+  </tr>
+</c:forEach> 
+</table>
 				
 			</div>
 		</div>

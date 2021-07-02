@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 import javax.transaction.Transactional;
 
 import org.hibernate.Session;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.online.videostreaming.classrooms.onlineclassrooms.dao.QuestionAnswerDao;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionAnswerEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionMasterEntity;
+import com.online.videostreaming.classrooms.onlineclassrooms.forms.SearchForm;
 import com.online.videostreaming.classrooms.onlineclassrooms.utils.HibernateSessionUtils;
 @Repository
 @Transactional
@@ -52,7 +54,7 @@ int saveCount=0;
 		{
 			Session session = currentSession();
 			beginTransaction();
-			session.update(questionAnswerEntity);
+			session.save(questionAnswerEntity);
 			
 			commitTransaction();
 		}
@@ -109,7 +111,27 @@ try{
 			closeSession();
 		}
 	}
-
+	
+	@Override
+	public boolean deleteFolderAndQuestionById(Integer idToDelete) throws Exception {
+		try
+		{
+			Session session = currentSession();
+			beginTransaction();
+			
+			session.delete(session.get(QuestionMasterEntity.class, idToDelete));
+			commitTransaction();
+			return true;
+		}
+		catch(Exception e){
+			rollbackTransaction();
+			throw e; 
+		}
+		finally{
+			closeSession();
+		}
+	}
+	
 	@Override
 	public QuestionAnswerEntity getMetrialsDetailsById(Integer Id) throws Exception {
 		try{
@@ -288,6 +310,103 @@ try{
 		return null;
 	}
 
+	@Override
+	public QuestionMasterEntity getAllUploadedQuestionsById(Integer questionId) throws Exception {
+		try{
+			Session session = currentSession();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<QuestionMasterEntity> criteria = builder.createQuery(QuestionMasterEntity.class);
+			Root<QuestionMasterEntity> root = criteria.from(QuestionMasterEntity.class);
+			return session.createQuery(
+	                 criteria.select(root).where(builder.equal(root.get("questionId"), questionId)))
+			           .getSingleResult();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+		finally
+		{
+			closeSession();
+		}
+	}
+
+	@Override
+	public QuestionAnswerEntity getAllUploadedQuestionAnswersById(Integer id,String email,String rollno) throws Exception {
+		try{
+			Session session = currentSession();
+			QuestionAnswerEntity questionAnswerEntity=null;
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<QuestionAnswerEntity> criteria = builder.createQuery(QuestionAnswerEntity.class);
+			Root<QuestionAnswerEntity> root = criteria.from(QuestionAnswerEntity.class);
+			questionAnswerEntity=session.createQuery(
+	                 criteria.select(root).where(builder.equal(root.get("questionId"), id),builder.equal(root.get("answerCreatedByEmail"), email),builder.equal(root.get("answerCreatedByRollNo"), rollno)))
+			           .getSingleResult();
+			
+			return questionAnswerEntity;
+		}
+		catch(javax.persistence.NoResultException e)
+		{
+			return null;
+		}
+		finally
+		{
+			closeSession();
+		}
+	}
+
+	@Override
+	public List<QuestionAnswerEntity> getAllUploadedQuestionAnswersByKeyword(SearchForm searchForm) throws Exception {
+		try{
+			Session session = currentSession();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<QuestionAnswerEntity> query = builder.createQuery(QuestionAnswerEntity.class);
+			EntityType<QuestionAnswerEntity> type = session.getMetamodel().entity(QuestionAnswerEntity.class);
+			Root<QuestionAnswerEntity> root = query.from(QuestionAnswerEntity.class);
+			query.where(builder.or(builder.like(root.get("meterialName"), "%" + searchForm.getKeyword()==""?null:searchForm.getKeyword() + "%"),
+					builder.like(
+				            builder.lower(
+				                root.get(
+				                    type.getDeclaredSingularAttribute("answerCreatedByRollNo", String.class)
+				                )
+				            ), "%" + searchForm.getKeyword()==""?null:searchForm.getKeyword().toLowerCase() + "%"
+				        ), 
+				        builder.like(
+				            builder.lower(
+				                root.get(
+				                    type.getDeclaredSingularAttribute("answerCreatedByName", String.class)
+				                )
+				            ), "%" + searchForm.getKeyword()==""?null:searchForm.getKeyword().toLowerCase() + "%"
+				        ), 
+				        builder.like(
+				            builder.lower(
+				                root.get(
+				                    type.getDeclaredSingularAttribute("answerCreatedByEmail", String.class)
+				                )
+				            ), "%" + searchForm.getKeyword()==""?null:searchForm.getKeyword().toLowerCase() + "%"
+				        ),
+			        builder.equal(root.get("batch"), searchForm.getBatch().toString()),
+			        builder.equal(root.get("courseCategory"), searchForm.getCourseCategory().toString())
+			        ));
+
+			query.orderBy(builder.asc(root.get("answerCreatedByName")),
+			            builder.asc(root.get("answerCreatedByEmail")));
+			return session.createQuery(query).getResultList();
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+		finally
+		{
+			closeSession();
+		}
+		
+		
+	}
+	
+	
 	
 	
 	

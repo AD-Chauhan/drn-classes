@@ -5,13 +5,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/security/tags"
 	prefix="sec"%>
-	<script type='text/javascript' src="<c:url value="/resources/pdf/pdfobject.js"/>"></script>
-	
+
+
 <script type="text/javascript">
 											
-									function validateForm(index){
+	
+
+
+function validateForm(index){
 										
-										document.getElementById("errorMessage~"+index).style.display= 'none';
+										       document.getElementById("errorMessage~"+index).style.display= 'none';
 												var filelength = document.getElementById("answerFileName~"+index).files.length;
 												if(filelength!=0){
 													 document.forms["metrialsAnswerForm~"+index].submit();
@@ -25,100 +28,280 @@
 											 }
 											
 											</script>
-<div id="apus-main-content">
-	<section id="apus-breadscrumb"
-		class="breadcrumb-page apus-breadscrumb has_bg"
-		style="background-image: url('https://demoapus.com/edumy/wp-content/uploads/2019/05/breadcrumb-bkg.jpg')">
-		<div class="container">
-			<div class="wrapper-breads">
-				<div class="wrapper-breads-inner">
-					<h2 class="bread-title">The Examination Materials</h2>
-					<div class="breadscrumb-inner">
-						<ol class="breadcrumb">
-							
-							<li><span class="active">The Examination Materials</span></li>
-						</ol>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<section id="main-container"
-		class="main-content home-page-default container inner">
-		<c:if test="${!empty questionlist}">
+<script type="text/javascript">
+
+var loggedUser = '<%=(String)session.getAttribute("loggedUser") %>';
+$(function(){
+	  
+    $("#loggedUser").text(loggedUser);
+
+});
+</script>
+<style type="text/css">
+
+
+.text-danger{
+
+font-size: 20px;
+    text-align: justify;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #84858f;
+
+}
+.fileinput.input-group {
+    display: flex;
+}
+.fileinput {
+    display: inline-block;
+    margin-bottom: 9px;
+    color: rgba(244,244,245,0.901961);
+    font-family: Open Sans,sans-serif;
+}
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+.input-group>.form-control, .input-group>.form-control-plaintext, .input-group>.custom-select, .input-group>.custom-file {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    margin-bottom: 0;
+}
+.form-control {
+    transition: border-color 0.15s ease-in-out,background-color 0.15s ease-in-out;
+}
+.form-control {
+    background-color: #040620;
+    border: none;
+    color: rgba(244,244,245,0.701961);
+    box-shadow: none;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.55em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.55;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #c1ccd3;
+    border-radius: .3rem;
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+    transition: border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+}
+.fileinput-new.input-group .btn-file, .fileinput-new .input-group .btn-file {
+    border-radius: 0 .3rem .3rem 0;
+}
+.fileinput-new.input-group .btn-file, .fileinput-new .input-group .btn-file {
+    border-radius: 0 4px 4px 0;
+}
+.fileinput.input-group>.btn-file {
+    z-index: 1;
+}
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+.fileinput .input-group-addon {
+    padding: .375rem .75rem;
+}
+.input-group-addon:not(:first-child) {
+    border-left: 0;
+}
+.fileinput.input-group>* {
+    position: relative;
+    z-index: 2;
+}
+.fileinput .btn {
+    vertical-align: middle;
+}
+.btn:not(.active), .btn-inverse:not(.active), .btn-gray:not(.active) {
+    box-shadow: none !important;
+}
+button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disabled), [type="submit"]:not(:disabled) {
+    cursor: pointer;
+}
+.btn {
+    transition: background-color 0.15s ease-in-out,border-color 0.15s ease-in-out;
+}
+.btn-default {
+    color: rgba(244,244,245,0.901961);
+    background-color: #474d84;
+    border-color: #353a63;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.btn-default {
+    color: #fff;
+    background-color: #3a3e6b;
+    border-color: #353a63;
+}
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    color: #495057;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    border-radius: .3rem;
+    transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+}
+button, [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: button;
+}
+button, select {
+    text-transform: none;
+}
+button, input {
+    overflow: visible;
+}
+input, button, select, optgroup, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+.btn-primary:hover {
+  background-color: #e63f17;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.btn-lg, .btn-group-lg > .btn {
+    padding: 19px 34px;
+    font-size: 20px;
+    line-height: 1.3333333;
+    border-radius: 0;
+}
+.btn-primary {
+    color: #ffffff;
+    background-color: #e63f17;
+    border-color: #e63f17;
+}
+.btn {
+    display: inline-block;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 19px 23px;
+    font-size: 14px;
+    line-height: 19px;
+    border-radius: 0;
+    -moz-transition: 0.2s all ease;
+    -webkit-transition: 0.2s all ease;
+    -o-transition: 0.2s all ease;
+    transition: 0.2s all ease;
+    font-family: 'Trebuchet MS', sans-serif;
+}
+.parallax1 small + * {
+    margin-top: 21px;
+}
+</style>
+<%-- <span class="pdf-icon"></span> --%>
+
+<main>
+<section class="well  parallax parallax1" >
+<div class="parallax_cnt" style="padding-top: 0px;
+    padding-bottom: 17px;
+    margin-top: -52px !important;
+    background-size: cover !important;
+    background-position: 0 0;
+    background-image: -webkit-linear-gradient(left, #84858f 0%, #c7ad83 100%) !important;
+    background-repeat: repeat-x !important;
+    text-transform: uppercase;
+    text-align: left;">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3 col-md-offset-1 col-sm-12 text-right center991">
+              <img src="<%=request.getContextPath()%>/resources/Users/images/logo-white.png" alt="">
+              <label style="text-transform: none;
+    font-size: 25px;
+    display: block;
+    color: #021827;
+    margin-top: -51px !important;
+    font-weight: 900 !important;
+    margin-left: -76px;" >Prayagraj</label>
+            </div>
+            <div class="col-md-8 col-sm-12 center991">
+              <div class="wrap">
+               
+                <small style="font-size: 26px !important;
+    margin-top: 39px;
+    color: #121312;
+    font-weight: 500;">
+                DRN Classes Are Educational Institutions Operating With The Exclusive Objective Of Preparing Students For Class 9, 10, 11, 12 Examinations
+                </small>
+    <p style="display: inline-flex !important;
+    font-size: 20px !important;color: #f3ba31;"  class="btn btn-primary btn-lg">Logged Student:&nbsp; <span id="loggedUser" style="color: #ffffff !important; text-transform: uppercase !important;">
+   </span></p>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div></section>
+
+<c:if test="${!empty questionlist}">
 						<c:forEach items="${questionlist}" varStatus="index" var="record">
-		<div class="row">
-			<div id="main-content" class="col-sm-12 col-md-12 col-sm-12 col-xs-12">
-				
-				
-						
-				<div id="main" class="site-main layout-blog" role="main" style="background-image: linear-gradient(to right, #24e772 0%, #1f25e8 100%) !important;">
-					
-					
-					<div class="layout-posts-list">
-					
-						<article
-							class="post post-layout post-list-item post-4440 type-post status-publish format-standard has-post-thumbnail hentry category-engineering tag-beginner tag-photoshop tag-sketch tag-ux-ui">
-							<div class="list-inner" style="height: 423px !important;padding: 10px !important;">
-								<div class="row flex-top">
-									<div class="image col-xs-5">
-										<div class="top-info-detail">
-											<div class="top-image" id="embeded_${record.questionAnswerId}" style="height:400px;">
-												<script>
-												var options = {
-													    height: "400px"
-													    
-													};
-												var path='';
-												path='<%=request.getContextPath()%>${record.questionFolderPath}${record.questionFolderId}.${record.questionFileExt}';
-												var pathId='';
-												pathId="#embeded_"+${record.questionAnswerId};
-												PDFObject.embed(path, pathId,options);</script>
-													
-											</div>
-											<div class="list-categories" style="top: 63px !important;">
-												<i class="fa fa-folder-open-o" style="color: #b70d0f !important;
-    font-size: 23px !important;
-    font-weight: 600 !important;"></i> <a style="color: #b70d0f !important;
-    font-size: 23px !important;
-    font-weight: 600 !important;"
-													href="https://demoapus.com/edumy/category/engineering/"
-													class="categories-name">${record.meterialTitle}</a>
-											</div>
-											<div class="entry-date-time">
-												<a
-													href="https://demoapus.com/edumy/business-fundamentals-copy/">
-													<span class="day" style="color: #b70d0f !important; font-size: 30px !important;"><fmt:formatDate value="${record.questionCreatedDate}" pattern="yy-MMM-dd"/></span> 
-												</a>
-											</div>
-										</div>
-									</div>
-									<div class="col-xs-7">
-										<div class="post-list-item-content">
-											<h4 class="entry-title-detail">
-												<a
-													href="https://demoapus.com/edumy/business-fundamentals-copy/">${record.meterialName}</a>
-											</h4>
-											<div class="top-info">
-												<span class="entry-author" style="color: #fff;"> <i
-													class="flaticon-profile"></i> ${record.batch}
-												</span> <span class="comments" style="color: #fff;"> <i
-													class="flaticon-consulting-message"></i>${record.courseCategory}
-												</span>
-											</div>
-											<div class="description" style="color: #fff;">${record.description}</div>
-											
-											<aside class="widget widget_search" style="margin-top: 61px !important;">
-												<div class="widget-search">
-													
-													<c:choose>
+	<section class="well " style="padding-bottom: 20px !important;
+    padding-top: 20px !important;">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-12 col-sm-12">
+
+
+					<section class="event">
+						<h5 class="event-heading">
+							<a href="#">${record.meterialTitle}</a>
+						</h5>
+						<footer>
+							<div class="clearfix">
+								<ul class="post-links mt-sm float-left">
+									
+									<li><a href="#"><span class="text-danger"> ${record.meterialName}</span></a></li>
+									
+								</ul>
+
+								
+							</div>
+							<ul class="post-comments mt-sm">
+								<li class="border-0"><a href="<%=request.getContextPath()%>/downloadSheets?folderId=${record.questionFolderId}&action=QUESTION"><span title="Please Click To Download Question Sheet"
+									class="thumb-xs avatar float-left mr-sm pdf-icon">
+								</span></a>
+								
+									<div class="comment-body">
+										
+										<p style="font-size: 15px;
+    text-align: justify;
+    text-transform: uppercase;
+    font-weight: 600;
+    word-break: break-all;
+    flex-wrap: wrap;
+    color: white;
+">${record.description}</p>
+									</div></li>
+								<li class="border-0">
+									<div class="comment-body">
+									
+									<c:choose>
 											<c:when test="${record.answerGiven ne true}">
 											<form:form class="form-horizontal" action="exam-answer-metrials" modelAttribute="metrialsAnswerForm" autocomplete="off"  enctype="multipart/form-data" method="post" id="metrialsAnswerForm~${index.index}">
-
-														<div class="input-group" style="background-image: linear-gradient(to right, #b70d0f 0%, #1fe8cc 100%) !important;">
-															
-															
-															<form:hidden path="userId"
+									
+										<div class="fileinput input-group fileinput-new">
+										<form:hidden path="userId"
 																 name="userId" id="userId~${index.index}"/>
 															<form:hidden path="emailId"
 																 name="emailId" id="emailId~${index.index}" />
@@ -126,69 +309,65 @@
 																 name="questionId" id="questionAnswerId~${index.index}" value="${record.questionAnswerId}"/>		 
 													
 															<form:input type="file" placeholder="Upload Answer Sheet" path="answerFileName" 
-																 name="answerFileName"  id="answerFileName~${index.index}" cssClass="form-control input-sm" /> <span
-																class="input-group-btn">
-																<button onclick="validateForm(${index.index})" type="button" style="font-size: 20px;
-    color: #fff;" class="btn btn-sm btn-search">
-																	Upload Answer Sheet
-																</button>
-															</span> 
-																</div>
-										      <div class="top-info" id="errorMessage~${index.index}" style="border: none !important; display: none;">
-												<span class="entry-author" style="color: #b70d0f !important;font-size: 22px !important; font-weight: 600 !important;">Please Choose answer sheet to upload. This field is required.
+																 name="answerFileName"  id="answerFileName~${index.index}" cssClass="form-control" cssStyle="color: #e63f17;
+    font-size: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;" />	
+											
+											
+											<button onclick="validateForm(${index.index})" class="input-group-addon btn btn-default btn-file" type="button" style="width: 200px !important;
+    background: #e63f17;
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    text-transform: uppercase;">
+												Upload
+											</button>
+											
+										</div>
+										<div class="top-info" id="errorMessage~${index.index}" style="border: none !important; display: none;">
+												<span class="entry-author" style="color: #e63f17 !important;font-size: 15px !important; font-weight: 600 !important;">Please Choose answer sheet to upload. This field is required.
 												</span> 
 											</div>
-													</form:form>
+										</form:form>
 											
 											</c:when>
 											<c:otherwise>
-											
-											
-											
-											<div  style="color: #fff;
-    background-image: linear-gradient(to right, #b70d0f 0%, #1fe8cc 100%) !important;
-    padding: 5px 0px 0px 18px;
+										<div style="color: #fff;
+    background-image: linear-gradient(to right, #e63f17 0%, #004471 100%) !important;
+    padding: 2px 0px 0px 30px;
     width: 100%;
-    height: 50px;
+    height: 34px;
     border: 1px solid #ddd;
     -webkit-border-radius: 5px;
     box-shadow: 0 5px 5px -5px rgb(0 0 0 / 9%);
-    font-size: 20px;
-    text-transform: uppercase;">Note: Answer Sheet Has Been Submitted Successfully</div>
-											
-											</c:otherwise>
-											</c:choose>	
-													
-												</div>
-											</aside>
+    font-size: 17px;
+    text-transform: uppercase;" class="fileinput input-group fileinput-new">
+										
+										Note: Answer Sheet Has Been Submitted Successfully
 										</div>
+										</c:otherwise>
+											</c:choose>
 									</div>
-								</div>
-							</div>
-						</article>
+								</li>
+							</ul>
+						</footer>
+					</section>
 
 
-				
 
-					</div>
-					
 				</div>
-				
-				
-			</div>
 
+			</div>
 		</div>
-		</c:forEach>
-					</c:if>	
-		<c:if test="${empty questionlist}">			
-		<div class="wrapper-breads">
-				<div class="wrapper-breads-inner">
-					<h2 class="bread-title" style="text-align: center !important;
-    text-transform: uppercase !important;
-    font-size: 24px !important;">No Examination Materials Are Available</h2>
-					
-				</div>
-			</div>
-			</c:if>	
 	</section>
-</div>
+
+</c:forEach>
+					</c:if>	
+
+
+
+</main>
+
+

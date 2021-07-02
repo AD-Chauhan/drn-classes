@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -72,7 +70,7 @@ public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilte
 		if (captchaAnswer != null || !"".equals(captchaAnswer)) {
 			Boolean isValid = captchaService.validateCaptchaCode(request, "CAPTCHA_KEY" + request.getSession().getId(),
 					captchaAnswer, CaptchaType.IMG);
-			if (isValid) {
+			if (!isValid) {
 				SecurityContextHolder.clearContext();
 				try {
 					this.CaptchaError(request, response, new CaptchaAuthenticationException(
@@ -98,23 +96,6 @@ public class CaptchaValidationFilter extends UsernamePasswordAuthenticationFilte
 
 			return null;
 		}
-
-		/*
-		 * HttpSession session =request.getSession(true); String saltFromSession =
-		 * (String)session.getAttribute("saltKey");
-		 * session.setAttribute("passwordFixedWithSalt",
-		 * (String)request.getParameter("hPwd")); String username =
-		 * (String)request.getParameter("userName"); username = (username != null) ?
-		 * username : ""; username = username.trim(); String password =
-		 * (String)request.getParameter("password"); password = (password != null) ?
-		 * password : ""; SHA256 newSha256 = new SHA256(password+saltFromSession);
-		 * 
-		 * 
-		 * OAuth2AuthorizationCodeAuthenticationToken authRequest = new
-		 * OAuth2AuthorizationCodeAuthenticationToken(username, password,false);
-		 * setDetails(request, authRequest); return
-		 * this.getAuthenticationManager().authenticate(authRequest);
-		 */
 
 	}
 

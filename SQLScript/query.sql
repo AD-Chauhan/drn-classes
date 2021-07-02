@@ -139,6 +139,8 @@ CREATE TABLE public.drn_classes_student
 )
 
 
+ALTER TABLE public.drn_classes_student
+    ADD COLUMN roll_no character varying COLLATE pg_catalog."default";
 	
 	CREATE SEQUENCE public.question_answer_entity_seq
     INCREMENT 1
@@ -150,7 +152,8 @@ CREATE TABLE public.drn_classes_student
 	CREATE TABLE public.question_answer_entity
 (
     questionanswer_id integer NOT NULL DEFAULT nextval('question_answer_entity_seq'::regclass),
-    meterial_name character varying(500) COLLATE pg_catalog."default",
+    question_id integer,
+	meterial_name character varying(500) COLLATE pg_catalog."default",
     meterial_title character varying(500) COLLATE pg_catalog."default",
     course_category character varying(500) COLLATE pg_catalog."default",
     description text COLLATE pg_catalog."default",
@@ -164,15 +167,14 @@ CREATE TABLE public.drn_classes_student
     answer_folder_path text COLLATE pg_catalog."default",
     answer_file_name text COLLATE pg_catalog."default",
     answer_file_ext character varying(500) COLLATE pg_catalog."default",
-    answer_created_by_user_id integer,
+	answer_created_by_name character varying(500) COLLATE pg_catalog."default",
+    answer_created_by_rollno character varying(500) COLLATE pg_catalog."default",
     answer_created_by_email character varying(500) COLLATE pg_catalog."default",
-    answer_created_date timestamp without time zone ,
+    answer_created_date timestamp without time zone,
     is_answered boolean NOT NULL DEFAULT false,
     answer_folder_id character varying(100) COLLATE pg_catalog."default",
-   
     CONSTRAINT question_answer_entity_pkey PRIMARY KEY (questionanswer_id)
 )
-
 
 	CREATE SEQUENCE public.question_master_entity_seq
     INCREMENT 1
@@ -198,4 +200,46 @@ CREATE TABLE public.drn_classes_student
    
     CONSTRAINT question_master_entity_pkey PRIMARY KEY (question_id)
 )
+
+
+
+
+	CREATE TABLE public.comment_reply
+(
+    video_reply_id integer NOT NULL DEFAULT nextval('video_reply_id_seq'::regclass),
+    reply text COLLATE pg_catalog."default" NOT NULL,
+    comment_id integer NOT NULL,
+    created_by character varying(500) COLLATE pg_catalog."default",
+    created_date timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT comment_reply_pkey PRIMARY KEY (video_reply_id)
+)
+
+
+	CREATE TABLE public.video_comment
+(
+    video_comment_id integer NOT NULL DEFAULT nextval('video_reply_id_seq'::regclass),
+    comment text COLLATE pg_catalog."default" NOT NULL,
+    folderId character varying(100) COLLATE pg_catalog."default",
+    created_by character varying(500) COLLATE pg_catalog."default",
+    created_date timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT video_comment_pkey PRIMARY KEY (video_comment_id)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

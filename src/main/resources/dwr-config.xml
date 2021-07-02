@@ -28,6 +28,7 @@
 			<dwr:include method="deleteFolderAndSheetsById" />
 			<dwr:include method="reSubmitAnswerSheet" /> 
 			<dwr:include method="getAllBatchOrClasses" />
+			<dwr:include method="deleteQuestionById" />
 		</dwr:remote>
 	</bean>
 	

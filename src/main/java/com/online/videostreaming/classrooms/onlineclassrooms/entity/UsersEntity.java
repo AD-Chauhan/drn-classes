@@ -72,14 +72,19 @@ public class UsersEntity extends CreatedDetails implements Serializable {
 	@Column(name = "locktime")
 	private Date lockTime;
 
+	@Column(name = "roll_no")
+	private String rollNo;
+	
 	public UsersEntity() {
 		super();
 	}
 
+	
+	
 	public UsersEntity(Integer userId, String firstName, String middleName, String lastName, String email,
 			String userPassword, List<UsersRole> roles, String phone, String deactivatedReason, String batch,
 			String correspondanceAddress, String permanentAddress, String fatherName, String motherName,
-			Integer failedAttempt, Boolean isAccountNonLocked, Date lockTime) {
+			Integer failedAttempt, Boolean isAccountNonLocked, Date lockTime, String rollNo) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
@@ -98,7 +103,10 @@ public class UsersEntity extends CreatedDetails implements Serializable {
 		this.failedAttempt = failedAttempt;
 		this.isAccountNonLocked = isAccountNonLocked;
 		this.lockTime = lockTime;
+		this.rollNo = rollNo;
 	}
+
+
 
 	public Integer getUserId() {
 		return userId;
@@ -235,5 +243,15 @@ public class UsersEntity extends CreatedDetails implements Serializable {
 	public void setLockTime(Date lockTime) {
 		this.lockTime = lockTime;
 	}
+
+	public String getRollNo() {
+		return rollNo;
+	}
+
+	public void setRollNo(String rollNo) {
+		this.rollNo = rollNo;
+	}
+
+	
 
 }

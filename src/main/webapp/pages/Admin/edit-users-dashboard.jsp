@@ -400,6 +400,7 @@ if(message=='true'){
 				<thead>
 					<tr>
 						<th>SR No.</th>
+						<th>Roll Number</th>
 						<th>FIRST NAME</th>
 						<th>MIDDLE NAME</th>
 						<th>LAST NAME</th>
@@ -425,6 +426,7 @@ if(message=='true'){
 						<c:forEach items="${finalList}" varStatus="index" var="record">
 							<tr>
 								<td>${index.count}</td>
+								<td>${record.rollNo}</td>
 								<td>${record.firstName}</td>
 								<td>
 								

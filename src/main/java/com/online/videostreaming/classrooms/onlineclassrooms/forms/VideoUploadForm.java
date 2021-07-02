@@ -23,6 +23,6 @@ public class VideoUploadForm {
 	private String thumbnailPath;
 	private String thumbnailFileName;
 	private String encryptdata;
-	
+	private String _csrf;
 	
 }

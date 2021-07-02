@@ -7,12 +7,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StreamUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesView;
@@ -21,13 +23,17 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 public class WebMvcConfig implements WebMvcConfigurer {
 
 	
-	
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
           .addResourceHandler("/resources/**")
           .addResourceLocations("/resources/");	
     }
+	 @Override
+	    public void addViewControllers( ViewControllerRegistry registry ) {
+	        registry.addViewController( "/" ).setViewName( "forward:/welcome" );
+	        registry.setOrder( Ordered.HIGHEST_PRECEDENCE );
+	    }
 	
 	@Bean
 	  public TilesConfigurer tilesConfigurer() {

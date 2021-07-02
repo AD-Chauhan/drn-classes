@@ -32,8 +32,8 @@ function deleteFilesAndFolder(questionAnswerId){
 	    callback: function (result) {
 	    	if(result)
 			{
-			videoDwrUtils.deleteFolderAndSheetsById(parseInt(questionAnswerId),{callback:function(message){
-				window.location.href=pageContext+"/view-exam-question-answer-metrials";
+			videoDwrUtils.deleteQuestionById(parseInt(questionAnswerId),{callback:function(message){
+				window.location.href=pageContext+"/view-exam-question-sheet";
 			},
 			async : false
 			});	

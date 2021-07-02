@@ -168,9 +168,12 @@ var pageContext='${pageContext.request.contextPath}';
      
 </script>
 <div class="wrapper">
-	<div class="m-account-w"
-		data-bg-img="<%=request.getContextPath()%>/resources/Admin/assets/img/bg-par2.jpg">
-		<div class="m-account">
+	<div class="m-account-w" style="background-size: cover !important;
+    background-position: 0 0;
+    background-image: -webkit-linear-gradient(left, #84858f 0%, #c7ad83 100%) !important;
+    background-repeat: repeat-x !important;">
+		<div class="m-account" style="width: 100% !important;
+	max-width: 1002px !important;">
 			<div class="row no-gutters">
 			<c:if
 								test="${ not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}">
@@ -186,18 +189,37 @@ var pageContext='${pageContext.request.contextPath}';
 								</div>
 							</c:if>
 				<div class="col-md-6">
-					<div class="m-account--content-w" style="background-color: #ffffff !important;">
-						<div class="logo" style="margin-bottom: 299px !important; height: 100px !important;
-    margin-left: 0px !important;">
-								<img style="max-width: 100% !important;"
-									src="<%=request.getContextPath()%>/resources/img/logo.png"
-									alt=""/>
-<label style="font-size: 46px;
+					<div class="m-account--content-w" style="background-color: #004471 !important;">
+						<div class="logo" >
+								
+	     <div class="jumbotron text-center" style="margin-top: 18px;color: #ffffff;text-align: center;
+    height: 100%;">
+            <p style="margin: 0;">
+            <img style="height: 159px !important;
+    width: 225px !important;
+    margin-top: -31px !important;"
+									src="<%=request.getContextPath()%>/resources/Users/images/logo-white.png"alt=""/>
+              <label style="text-transform: none;
+    font-size: 25px;
+    display: block;
+    color: #021827;
+    margin-top: -41px !important;
+    font-weight: 900 !important;" >Prayagraj</label> 
+              <small style="text-transform: uppercase;
+    font-size: 16px !important;
+    margin-top: 30px;
+    display: block;
+    color: #e64018;
+    height: 131px;
     text-align: center;
-    color: #1b2223;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-top: 20px;">Prayagraj</label> 
+    word-break: break-all;
+    font-weight: 900 !important;">
+                DRN Classes Are Educational Institutions Operating With The Exclusive Objective Of Preparing Students For Class 9, 10, 11, 12 Examinations
+              </small>
+            </p>
+           
+          </div>								
+
 						</div>
 						
 					</div>
@@ -211,7 +233,10 @@ var pageContext='${pageContext.request.contextPath}';
 								modelAttribute="loginForm" id="loginForm">
 								<form:hidden path="${_csrf.parameterName}"
 									value="${_csrf.token}" htmlEscape="true" />
-								<label class="m-account--title">Login to your account</label>
+								<label class="m-account--title" style="color: #458bb9 !important;
+    font-size: 17px !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;">Login to your account</label>
 								<div class="form-group">
 									<div class="input-group">
 										<div class="input-group-prepend">
@@ -276,8 +301,10 @@ var pageContext='${pageContext.request.contextPath}';
 								</div>
 								
 								<div class="m-account--actions">
-									<a href="#" class="btn-link">Forgot Password?</a>
-									<button type="button" onclick="validateUser(this)" id="submitBtn" class="btn btn-rounded btn-info">Login</button>
+									
+									<button type="button" style="color: #fff !important;
+    background-color: #004471 !important;
+    border-color: #004471 !important;" onclick="validateUser(this)" id="submitBtn" class="btn btn-rounded btn-info">Login</button>
 								</div>
 
 								<div class="m-account--footer">

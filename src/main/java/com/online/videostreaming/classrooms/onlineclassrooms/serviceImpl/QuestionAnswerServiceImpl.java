@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.online.videostreaming.classrooms.onlineclassrooms.dao.QuestionAnswerDao;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionAnswerEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionMasterEntity;
+import com.online.videostreaming.classrooms.onlineclassrooms.forms.SearchForm;
 @Service
 public  class QuestionAnswerServiceImpl
 		implements com.online.videostreaming.classrooms.onlineclassrooms.services.QuestionAnswerService {
@@ -34,6 +35,11 @@ public  class QuestionAnswerServiceImpl
 	public List<QuestionAnswerEntity> getAllUploadedQuestionAnswers() throws Exception {
 		return questionAnswerDao.getAllUploadedQuestionAnswers();
 	}
+	
+	@Override
+	public QuestionAnswerEntity getAllUploadedQuestionAnswersById(Integer id,String email,String rollno) throws Exception {
+		return questionAnswerDao.getAllUploadedQuestionAnswersById(id, email, rollno);
+	}
 
 	@Override
 	public String deleteFolderAndMeterialsById(Integer idToDelete) throws Exception {
@@ -52,10 +58,54 @@ public  class QuestionAnswerServiceImpl
 					isDeleted=true;
 					if(obj.getQuestionFileName()!=null )
 					{
-						File questionfile = new File(context.getRealPath(obj.getQuestionFolderPath())+obj.getQuestionFolderId()+"."+obj.getQuestionFileExt());
 						File answerfile = new File(context.getRealPath(obj.getAnswerFolderPath())+obj.getAnswerFolderId()+"."+obj.getAnswerFileExt());
-						File dir = new File(context.getRealPath("/resources/MetrialsUploads/QuestionSheets/"+obj.getQuestionFolderId()+"/"));
 						File dir2 = new File(context.getRealPath("/resources/MetrialsUploads/AnswersSheets/"+obj.getAnswerFolderId()+"/"));
+						
+						
+						
+						if(answerfile.exists())
+						{
+							answerfile.delete();
+							
+						}
+						FileUtils.deleteDirectory(dir2);
+						
+					}
+				}
+				
+			}
+			
+		}
+		catch(Exception e)
+		{
+			isDeleted=false;
+		}
+		
+		
+		return isDeleted==true?"Record deleted Successfully":"Record not deleted Successfully";
+	
+	}
+	
+	
+	@Override
+	public String deleteQuestionById(Integer idToDelete) throws Exception {
+
+		boolean isDeleted=false;
+		try
+		{
+			
+			QuestionMasterEntity obj =  questionAnswerDao.getAllUploadedQuestionsById(idToDelete);
+			if(obj!=null) {
+				
+				boolean check = questionAnswerDao.deleteFolderAndQuestionById(idToDelete);
+				if(check)
+				{
+					
+					isDeleted=true;
+					if(obj.getQuestionFileName()!=null )
+					{
+						File questionfile = new File(context.getRealPath(obj.getQuestionFolderPath())+obj.getQuestionFolderId()+"."+obj.getQuestionFileExt());
+						File dir = new File(context.getRealPath("/resources/MetrialsUploads/QuestionSheets/"+obj.getQuestionFolderId()+"/"));
 						
 						
 						if(questionfile.exists())
@@ -63,13 +113,8 @@ public  class QuestionAnswerServiceImpl
 							questionfile.delete();
 							
 						}
-						if(answerfile.exists())
-						{
-							answerfile.delete();
-							
-						}
+						
 						FileUtils.deleteDirectory(dir);
-						FileUtils.deleteDirectory(dir2);
 						
 					}
 				}
@@ -114,6 +159,18 @@ public  class QuestionAnswerServiceImpl
 	public Optional<QuestionMasterEntity> downloadQuestionSheets(String folderId, String action) throws Exception {
 		return questionAnswerDao.getQuestionDetailsByFolderId(folderId, action);
 	}
+
+	@Override
+	public QuestionMasterEntity getAllUploadedQuestionsById(Integer questionId) throws Exception {
+		return questionAnswerDao.getAllUploadedQuestionsById(questionId);
+	}
+
+	@Override
+	public List<QuestionAnswerEntity> getAllUploadedQuestionAnswersByKeyword(SearchForm searchForm) throws Exception {
+		return questionAnswerDao.getAllUploadedQuestionAnswersByKeyword(searchForm);
+	}
+
+	
 	
 	
 	

@@ -212,7 +212,7 @@ span.message {
 							<div class="form-group row">
 								<span class="label-text col-md-2 col-form-label text-md-right">Video Name</span>
 								<div class="col-md-10">
-									<form:input type="text" path="videoName" id="videoName"  name="videoName" class="form-control "/>
+									<form:input type="text" path="videoName" id="videoName"  name="videoName" maxlength="35" class="form-control "/>
 								</div>
 							</div>
 							<hr>
@@ -220,7 +220,7 @@ span.message {
 								<span class="label-text col-md-2 col-form-label text-md-right">Video Title
 								</span>
 								<div class="col-md-10">
-									<form:input type="text" path="videoTitle" id="videoTitle" name="videoTitle" class="form-control"/> 
+									<form:input type="text" path="videoTitle" id="videoTitle" name="videoTitle" maxlength="30" class="form-control"/> 
 								</div>
 								
 							</div>

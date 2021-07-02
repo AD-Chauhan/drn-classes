@@ -17,16 +17,16 @@ import org.apache.commons.codec.binary.Base32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.online.videostreaming.classrooms.onlineclassrooms.captcha.CaptchaCode;
 import com.online.videostreaming.classrooms.onlineclassrooms.captcha.CaptchaType;
 import com.online.videostreaming.classrooms.onlineclassrooms.captcha.ImgCaptchaKeyResponse;
-import com.online.videostreaming.classrooms.onlineclassrooms.captcha.exception.CaptchaException;
 import com.online.videostreaming.classrooms.onlineclassrooms.captcha.services.CaptchaCacheProvider;
 import com.online.videostreaming.classrooms.onlineclassrooms.captcha.services.CaptchaCodeGenerator;
 import com.online.videostreaming.classrooms.onlineclassrooms.captcha.services.FactoryRegistry;
+
 @Service
 public class CaptchaService {
 

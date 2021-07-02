@@ -30,11 +30,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.service.UserService;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.BlogUploadEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.BlogsForms;
 import com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl.RandomGeneratorImpl;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.BlogService;
+import com.online.videostreaming.classrooms.onlineclassrooms.services.QuestionAnswerService;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.RandomGenerator;
+import com.online.videostreaming.classrooms.onlineclassrooms.services.VideoGalleryService;
 @Controller
 public class AdminController {
 	private static final int DEFAULT_RANDOM_LENGTH = 10;
@@ -43,6 +46,14 @@ public class AdminController {
     ServletContext context;
 	@Autowired
 	private BlogService blogService;
+	@Autowired
+	private VideoGalleryService videoGalleryService;
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private QuestionAnswerService questionAnswerService;
+	
 	@PreAuthorize ("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/admin-dashboard", method = RequestMethod.GET)
 	public String loginPage(Model model, HttpServletRequest request, HttpServletResponse response)
@@ -53,7 +64,19 @@ public class AdminController {
 		SecurityContextHolder.setContext(ctx);
 		ctx.setAuthentication(securityContext.getAuthentication());
 		
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+			
+			
+			
+		model.addAttribute("blogsize", blogService.getAllUploadedBlogs()==null?0:blogService.getAllUploadedBlogs().size());
+		model.addAttribute("videosize", videoGalleryService.getAllUploadedVideos()==null?0:videoGalleryService.getAllUploadedVideos().size());
+		model.addAttribute("usersize", userService.findAllUserDetails()==null?0:userService.findAllUserDetails().size());
+		model.addAttribute("questionsize", questionAnswerService.getAllUploadedQuestions()==null?0:questionAnswerService.getAllUploadedQuestions().size());
+		model.addAttribute("answersize", questionAnswerService.getAllUploadedQuestionAnswers()==null?0:questionAnswerService.getAllUploadedQuestionAnswers().size());
 		
+		}
 		
 		return "admin-dashboard";
 

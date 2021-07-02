@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.EndUserDetails;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionAnswerEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.QuestionMasterEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.enums.Batch;
@@ -47,232 +49,71 @@ import com.online.videostreaming.classrooms.onlineclassrooms.enums.CourseCategor
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.MetrialsAnswerForm;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.MetrialsQuestionForm;
 import com.online.videostreaming.classrooms.onlineclassrooms.forms.QuestionAnswerViewForm;
+import com.online.videostreaming.classrooms.onlineclassrooms.forms.SearchForm;
 import com.online.videostreaming.classrooms.onlineclassrooms.serviceImpl.RandomGeneratorImpl;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.QuestionAnswerService;
 import com.online.videostreaming.classrooms.onlineclassrooms.services.RandomGenerator;
+
 @Controller
 public class ExamMeterialController {
 	private static final int DEFAULT_RANDOM_LENGTH = 10;
 	private RandomGenerator randomGenerator;
 	@Autowired
-    ServletContext context;
+	ServletContext context;
 	@Autowired
 	private QuestionAnswerService questionAnswerService;
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/upload-exam-meterials", method = RequestMethod.GET)
-	public String meterialGetPage(@ModelAttribute("metrialsQuestionForm") MetrialsQuestionForm metrialsQuestionForm,Model model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		model.addAttribute("batch", Batch.mappings.entrySet()
-	            .stream()
-	            .sorted((Map.Entry.<Integer, String>comparingByValue().reversed()))
-	            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
+	public String meterialGetPage(@ModelAttribute("metrialsQuestionForm") MetrialsQuestionForm metrialsQuestionForm,
+			Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
 
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+		model.addAttribute("batch", Batch.mappings.entrySet().stream()
+				.sorted((Map.Entry.<Integer, String>comparingByValue().reversed()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
+		}
 		return "upload-exam-question-meterials";
 
 	}
-	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/upload-exam-meterials", method = RequestMethod.POST)
-	public String meterialPostPage(@ModelAttribute("metrialsQuestionForm") MetrialsQuestionForm metrialsQuestionForm,Model model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		
-if(metrialsQuestionForm.getMetrialFileName().getContentType().toLowerCase().equals("application/pdf")) {
-	
-	if (metrialsQuestionForm.getMetrialFileName() != null && !metrialsQuestionForm.getMetrialFileName().isEmpty()) {
-        String random=null;
-		randomGenerator=new RandomGeneratorImpl(DEFAULT_RANDOM_LENGTH);
-		random=randomGenerator.generateToken();
-		
-
-		StringBuilder dirPath = new StringBuilder().append(File.separator).append("resources").append(File.separator);
-
-		StringBuilder pathtostring = new StringBuilder().append(context.getRealPath(dirPath.toString())).append(File.separator).append("MetrialsUploads").append(File.separator);
-	
-		Path pathupload = Paths.get(pathtostring.toString());
-		if (!Files.exists(pathupload)) {
-			try {
-				Files.createDirectories(pathupload);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		StringBuilder idpathtostring = new StringBuilder().append(pathtostring).append("QuestionSheets")
-				.append(File.separator);
-		Path pathId = Paths.get(idpathtostring.toString());
-		if (!Files.exists(pathId)) {
-			try {
-				Files.createDirectories(pathId);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		StringBuilder questionpathtostring = new StringBuilder().append(idpathtostring.toString()).append(random).append(File.separator);
-		Path pathQuestion = Paths.get(questionpathtostring.toString());
-		if (!Files.exists(pathQuestion)) {
-			try {
-				Files.createDirectories(pathQuestion);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-
-		
-
-		 try {
-			 
-		        Files.write(Paths.get(questionpathtostring.toString() + random+"."+FilenameUtils.getExtension(metrialsQuestionForm.getMetrialFileName().getOriginalFilename())),metrialsQuestionForm.getMetrialFileName().getBytes());
-	            	
-		        QuestionMasterEntity questionMasterEntity=new QuestionMasterEntity();
-		        questionMasterEntity.setQuestionTitle(metrialsQuestionForm.getMetrialTitle());
-		        questionMasterEntity.setQuestionName(metrialsQuestionForm.getMetrialName());
-		        questionMasterEntity.setCourseCategory(metrialsQuestionForm.getCourseCategory());
-		        questionMasterEntity.setBatch(metrialsQuestionForm.getBatch().toString());
-		        questionMasterEntity.setDescription(metrialsQuestionForm.getDescription());
-		        questionMasterEntity.setQuestionFileName(metrialsQuestionForm.getMetrialFileName().getOriginalFilename());
-		        questionMasterEntity.setQuestionFolderPath("/resources/MetrialsUploads/QuestionSheets/"+random+"/");
-		        questionMasterEntity.setQuestionFileExt(FilenameUtils.getExtension(metrialsQuestionForm.getMetrialFileName().getOriginalFilename()));
-		        questionMasterEntity.setQuestionFolderId(random);
-		        questionMasterEntity.setQuestionCreatedby("ADMIN");
-		        questionMasterEntity.setQuestionCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
-	           int saveCount= questionAnswerService.uploadQuestionFile(questionMasterEntity);
-		       
-	           
-	           if(saveCount==0) {
-	        	   
-	        	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.SUCCESS_KEY,
-		                    "You successfully uploaded "+metrialsQuestionForm.getMetrialFileName().getOriginalFilename()); 
-	           }else if(saveCount==1) {
-	        	   
-	        	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
-		                    "You un-successfully not uploaded "+ metrialsQuestionForm.getMetrialFileName().getOriginalFilename() ); 
-	        	   
-	           }
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-		
-		
-		
-		
-	
-	
-	
-}
-	
-}else {
-	MetrialsQuestionForm metrialsQuestionForm2=new MetrialsQuestionForm();
-	model.addAttribute("metrialsQuestionForm",metrialsQuestionForm2);
-	model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
-             "You can upload only PDF file. Please choose PDF file for Upload" );
-	
-}
-		
-		
-model.addAttribute("batch", Batch.mappings.entrySet()
-        .stream()
-        .sorted((Map.Entry.<Integer, String>comparingByValue().reversed()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
-		
-		return "upload-exam-question-meterials";
-
-	}
-	@PreAuthorize ("hasRole('ROLE_USERS')")
-	@RequestMapping(value = "/exam-answer-metrials", method = RequestMethod.GET)
-	public String meterialAnsGetPage(@ModelAttribute("metrialsAnswerForm") MetrialsAnswerForm metrialsAnswerForm,Model model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		HttpSession session =request.getSession(true);
-		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
+	public String meterialPostPage(@ModelAttribute("metrialsQuestionForm") MetrialsQuestionForm metrialsQuestionForm,
+			Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
 		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
 		SecurityContextHolder.setContext(ctx);
 		ctx.setAuthentication(securityContext.getAuthentication());
-		
+
 		if (SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
 				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
-		 List<QuestionAnswerEntity> questionlist =questionAnswerService.getAllUploadedQuestionAnswers();
-		 if(questionlist!=null && questionlist.size()!=0) {
-			 List<QuestionAnswerViewForm> questionAnswerViewFormList=new ArrayList<QuestionAnswerViewForm>();
-			 questionAnswerViewFormList= questionlist.stream().map(obj->{
-				 QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
-				 questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionAnswerId());
-				 questionAnswerViewForm.setMeterialName(obj.getMeterialName());
-				 questionAnswerViewForm.setMeterialTitle(obj.getMeterialTitle());
-				 
-				 if(Integer.parseInt(obj.getBatch())==1 || Integer.parseInt(obj.getBatch()) ==2 ) {
-						
-					 questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
-						
-						
-					}else if(Integer.parseInt(obj.getBatch())==3 || Integer.parseInt(obj.getBatch()) ==4 ) {
-						
-						
-						questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
-						
-					}
-				 
-				 questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
-				 questionAnswerViewForm.setDescription(obj.getDescription().length()>400?obj.getDescription().substring(0, 400)+"....":obj.getDescription() );
-				 questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
-				 questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
-				 questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
-				 questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
-				 questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
-				 questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
-				 questionAnswerViewForm.setAnswerCreatedByEmail(obj.getAnswerCreatedByEmail());
-				 questionAnswerViewForm.setAnswerCreatedByUserId(obj.getAnswerCreatedByUserId());
-				 questionAnswerViewForm.setAnswerCreatedDate(obj.getAnswerCreatedDate());
-				 questionAnswerViewForm.setAnswerGiven(obj.isAnswered());
-				 questionAnswerViewForm.setAnswerFileExt(obj.getAnswerFileExt());
-				 questionAnswerViewForm.setAnswerFileName(obj.getAnswerFileName());
-				 questionAnswerViewForm.setAnswerFolderId(obj.getAnswerFolderId());
-				 questionAnswerViewForm.setAnswerFolderPath(obj.getAnswerFolderPath());
-				 
-				 return questionAnswerViewForm;
-				 
-			 }).collect(Collectors.toList()); 
-			 model.addAttribute("questionlist",questionAnswerViewFormList);
-		 }
-		 
-		
-		}
-		return "upload-exam-answer-meterials";
+		if (metrialsQuestionForm.getMetrialFileName().getContentType().toLowerCase().equals("application/pdf")) {
 
-	}
-	@PreAuthorize ("hasRole('ROLE_USERS')")
-	@RequestMapping(value = "/exam-answer-metrials", method = RequestMethod.POST)
-	public String meterialAnsPostPage(@ModelAttribute("metrialsAnswerForm") MetrialsAnswerForm metrialsAnswerForm,Model model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		
-		HttpSession session =request.getSession(true);
-		SecurityContext securityContext=(SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);	
-		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-		SecurityContextHolder.setContext(ctx);
-		ctx.setAuthentication(securityContext.getAuthentication());
-		
-		if (SecurityContextHolder.getContext().getAuthentication() != null
-				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
-				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
-		
-if(metrialsAnswerForm.getAnswerFileName().getContentType().toLowerCase().equals("application/pdf")) {
-		
-	if(metrialsAnswerForm.getQuestionAnswerId()!=null) {
-		 Optional<QuestionAnswerEntity> questionAnswerEntity=Optional.ofNullable(new QuestionAnswerEntity());
-		 questionAnswerEntity= questionAnswerService.getUploadedQuestionAnswersById(metrialsAnswerForm.getQuestionAnswerId());
-		 
-		if(questionAnswerEntity.isPresent()) {
-			
-			
-			if (metrialsAnswerForm.getAnswerFileName() != null && !metrialsAnswerForm.getAnswerFileName().isEmpty()) {
-		        String random=null;
-				randomGenerator=new RandomGeneratorImpl(DEFAULT_RANDOM_LENGTH);
-				random=randomGenerator.generateToken();
-				
+			if (metrialsQuestionForm.getMetrialFileName() != null
+					&& !metrialsQuestionForm.getMetrialFileName().isEmpty()) {
+				EndUserDetails userDetails = (EndUserDetails) SecurityContextHolder.getContext().getAuthentication()
+						.getPrincipal();
+				String random = null;
+				randomGenerator = new RandomGeneratorImpl(DEFAULT_RANDOM_LENGTH);
+				random = randomGenerator.generateToken();
 
-				StringBuilder dirPath = new StringBuilder().append(File.separator).append("resources").append(File.separator);
+				StringBuilder dirPath = new StringBuilder().append(File.separator).append("resources")
+						.append(File.separator);
 
-				StringBuilder pathtostring = new StringBuilder().append(context.getRealPath(dirPath.toString())).append(File.separator).append("MetrialsUploads").append(File.separator);
-			
+				StringBuilder pathtostring = new StringBuilder().append(context.getRealPath(dirPath.toString()))
+						.append(File.separator).append("MetrialsUploads").append(File.separator);
+
 				Path pathupload = Paths.get(pathtostring.toString());
 				if (!Files.exists(pathupload)) {
 					try {
@@ -282,7 +123,7 @@ if(metrialsAnswerForm.getAnswerFileName().getContentType().toLowerCase().equals(
 					}
 				}
 
-				StringBuilder idpathtostring = new StringBuilder().append(pathtostring).append("AnswersSheets")
+				StringBuilder idpathtostring = new StringBuilder().append(pathtostring).append("QuestionSheets")
 						.append(File.separator);
 				Path pathId = Paths.get(idpathtostring.toString());
 				if (!Files.exists(pathId)) {
@@ -293,7 +134,8 @@ if(metrialsAnswerForm.getAnswerFileName().getContentType().toLowerCase().equals(
 					}
 				}
 
-				StringBuilder questionpathtostring = new StringBuilder().append(idpathtostring.toString()).append(random).append(File.separator);
+				StringBuilder questionpathtostring = new StringBuilder().append(idpathtostring.toString())
+						.append(random).append(File.separator);
 				Path pathQuestion = Paths.get(questionpathtostring.toString());
 				if (!Files.exists(pathQuestion)) {
 					try {
@@ -302,274 +144,625 @@ if(metrialsAnswerForm.getAnswerFileName().getContentType().toLowerCase().equals(
 						e.printStackTrace();
 					}
 				}
-				
 
-				
+				try {
 
-				 try {
-					 
-				        Files.write(Paths.get(questionpathtostring.toString() + random+"."+FilenameUtils.getExtension(metrialsAnswerForm.getAnswerFileName().getOriginalFilename())),metrialsAnswerForm.getAnswerFileName().getBytes());
-			            
-			            
-			            questionAnswerEntity.get().setAnswered(true);
-			            questionAnswerEntity.get().setAnswerCreatedByEmail(metrialsAnswerForm.getEmailId());
-			            questionAnswerEntity.get().setAnswerCreatedByUserId(metrialsAnswerForm.getUserId());
-			            questionAnswerEntity.get().setAnswerCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
-			            questionAnswerEntity.get().setAnswerFileExt(FilenameUtils.getExtension(metrialsAnswerForm.getAnswerFileName().getOriginalFilename()));
-			            questionAnswerEntity.get().setAnswerFileName(metrialsAnswerForm.getAnswerFileName().getOriginalFilename());
-			            questionAnswerEntity.get().setAnswerFolderId(random);
-			            questionAnswerEntity.get().setAnswerFolderPath("/resources/MetrialsUploads/AnswersSheets/"+random+"/");
-			            
-			           int saveCount= questionAnswerService.uploadAnswerFile(questionAnswerEntity.get());
-				       
-			           
-			           if(saveCount==0) {
-			        	   
-			        	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.SUCCESS_KEY,
-				                    "You successfully uploaded "+metrialsAnswerForm.getAnswerFileName().getOriginalFilename()); 
-			           }else if(saveCount==1) {
-			        	   
-			        	   model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
-				                    "You un-successfully not uploaded "+ metrialsAnswerForm.getAnswerFileName().getOriginalFilename() ); 
-			        	   
-			           }
-			        } catch (IOException e) {
-			            e.printStackTrace();
-			        }
-				
-				
-				
-				
-			
-			
-			
-		}
-			
-		}
-		
-		
-	}
-	
-	
-	
-	
-	
-}else {
-	MetrialsQuestionForm metrialsQuestionForm2=new MetrialsQuestionForm();
-	model.addAttribute("metrialsQuestionForm",metrialsQuestionForm2);
-	model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
-             "You can upload only PDF file. Please choose PDF file for Upload" );
-	
-}
-		
-List<QuestionAnswerEntity> questionlist =questionAnswerService.getAllUploadedQuestionAnswers();
-if(questionlist!=null && questionlist.size()!=0) {
-	 List<QuestionAnswerViewForm> questionAnswerViewFormList=new ArrayList<QuestionAnswerViewForm>();
-	 questionAnswerViewFormList= questionlist.stream().map(obj->{
-		 QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
-		 questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionAnswerId());
-		 questionAnswerViewForm.setMeterialName(obj.getMeterialName());
-		 questionAnswerViewForm.setMeterialTitle(obj.getMeterialTitle());
-		 
-		 if(Integer.parseInt(obj.getBatch())==1 || Integer.parseInt(obj.getBatch()) ==2 ) {
-				
-			 questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
-				
-				
-			}else if(Integer.parseInt(obj.getBatch())==3 || Integer.parseInt(obj.getBatch()) ==4 ) {
-				
-				
-				questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
-				
+					Files.write(
+							Paths.get(questionpathtostring.toString() + random + "."
+									+ FilenameUtils.getExtension(
+											metrialsQuestionForm.getMetrialFileName().getOriginalFilename())),
+							metrialsQuestionForm.getMetrialFileName().getBytes());
+
+					QuestionMasterEntity questionMasterEntity = new QuestionMasterEntity();
+					questionMasterEntity.setQuestionTitle(metrialsQuestionForm.getMetrialTitle());
+					questionMasterEntity.setQuestionName(metrialsQuestionForm.getMetrialName());
+					questionMasterEntity.setCourseCategory(metrialsQuestionForm.getCourseCategory());
+					questionMasterEntity.setBatch(metrialsQuestionForm.getBatch().toString());
+					questionMasterEntity.setDescription(metrialsQuestionForm.getDescription());
+					questionMasterEntity
+							.setQuestionFileName(metrialsQuestionForm.getMetrialFileName().getOriginalFilename());
+					questionMasterEntity
+							.setQuestionFolderPath("/resources/MetrialsUploads/QuestionSheets/" + random + "/");
+					questionMasterEntity.setQuestionFileExt(FilenameUtils
+							.getExtension(metrialsQuestionForm.getMetrialFileName().getOriginalFilename()));
+					questionMasterEntity.setQuestionFolderId(random);
+					 if(!StringUtils.isEmpty(userDetails.getMiddleName())) {
+		                	
+		                	questionMasterEntity.setQuestionCreatedby(new StringBuilder().append(userDetails.getFirstName()).append(" ").append(userDetails.getMiddleName()).append(" ").append(userDetails.getLastName()).toString().toUpperCase());
+		                	
+		                }else {
+		                	
+		                	questionMasterEntity.setQuestionCreatedby(new StringBuilder().append(userDetails.getFirstName()).append(" ").append(userDetails.getLastName()).toString().toUpperCase());
+		                }
+					questionMasterEntity.setQuestionCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
+					int saveCount = questionAnswerService.uploadQuestionFile(questionMasterEntity);
+
+					if (saveCount == 0) {
+
+						model.addAttribute(
+								com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.SUCCESS_KEY,
+								"You successfully uploaded "
+										+ metrialsQuestionForm.getMetrialFileName().getOriginalFilename());
+					} else if (saveCount == 1) {
+
+						model.addAttribute(
+								com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
+								"You un-successfully not uploaded "
+										+ metrialsQuestionForm.getMetrialFileName().getOriginalFilename());
+
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 			}
-		 
-		 questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
-		 questionAnswerViewForm.setDescription(obj.getDescription().length()>400?obj.getDescription().substring(0, 400)+"....":obj.getDescription() );
-		 questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
-		 questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
-		 questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
-		 questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
-		 questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
-		 questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
-		 questionAnswerViewForm.setAnswerCreatedByEmail(obj.getAnswerCreatedByEmail());
-		 questionAnswerViewForm.setAnswerCreatedByUserId(obj.getAnswerCreatedByUserId());
-		 questionAnswerViewForm.setAnswerCreatedDate(obj.getAnswerCreatedDate());
-		 questionAnswerViewForm.setAnswerGiven(obj.isAnswered());
-		 questionAnswerViewForm.setAnswerFileExt(obj.getAnswerFileExt());
-		 questionAnswerViewForm.setAnswerFileName(obj.getAnswerFileName());
-		 questionAnswerViewForm.setAnswerFolderId(obj.getAnswerFolderId());
-		 questionAnswerViewForm.setAnswerFolderPath(obj.getAnswerFolderPath());
-		 
-		 return questionAnswerViewForm;
-		 
-	 }).collect(Collectors.toList()); 
-	 model.addAttribute("questionlist",questionAnswerViewFormList);
-}
 
-		}	
+		} else {
+			MetrialsQuestionForm metrialsQuestionForm2 = new MetrialsQuestionForm();
+			model.addAttribute("metrialsQuestionForm", metrialsQuestionForm2);
+			model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
+					"You can upload only PDF file. Please choose PDF file for Upload");
+
+		}
+
+		model.addAttribute("batch", Batch.mappings.entrySet().stream()
+				.sorted((Map.Entry.<Integer, String>comparingByValue().reversed()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
+		}
+		return "upload-exam-question-meterials";
+
+	}
+
+	@PreAuthorize("hasRole('ROLE_USERS')")
+	@RequestMapping(value = "/exam-answer-metrials", method = RequestMethod.GET)
+	public String meterialAnsGetPage(@ModelAttribute("metrialsAnswerForm") MetrialsAnswerForm metrialsAnswerForm,
+			Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+			List<QuestionMasterEntity> questionlist = questionAnswerService.getAllUploadedQuestions();
+
+			EndUserDetails userDetails = (EndUserDetails) SecurityContextHolder.getContext().getAuthentication()
+					.getPrincipal();
+
+			if (questionlist != null && questionlist.size() != 0) {
+
+				List<QuestionAnswerViewForm> questionAnswerViewFormList = new ArrayList<QuestionAnswerViewForm>();
+				for (QuestionMasterEntity obj : questionlist) {
+					if (Integer.parseInt(obj.getBatch()) == Integer.parseInt(userDetails.getBatch())) {
+						QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
+						questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionId());
+						questionAnswerViewForm.setMeterialName(obj.getQuestionName());
+						questionAnswerViewForm.setMeterialTitle(obj.getQuestionTitle());
+
+						if (Integer.parseInt(obj.getBatch()) == 1 || Integer.parseInt(obj.getBatch()) == 2) {
+
+							questionAnswerViewForm
+									.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
+
+						} else if (Integer.parseInt(obj.getBatch()) == 3 || Integer.parseInt(obj.getBatch()) == 4) {
+
+							questionAnswerViewForm
+									.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
+
+						}
+
+						questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
+						questionAnswerViewForm.setDescription(
+								obj.getDescription().length() > 400 ? obj.getDescription().substring(0, 400) + "...."
+										: obj.getDescription());
+						questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
+						questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
+						questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
+						questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
+						questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
+						questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
+						QuestionAnswerEntity questionMaster =questionAnswerService.getAllUploadedQuestionAnswersById(obj.getQuestionId(),userDetails.getEmail(),userDetails.getRollNo());
+						if(questionMaster!=null) {
+							
+							questionAnswerViewForm.setAnswerGiven(questionMaster.isAnswered());
+						}else {
+							
+							questionAnswerViewForm.setAnswerGiven(false);
+						}
+						
+						
+						questionAnswerViewFormList.add(questionAnswerViewForm);
+					}
+
+				}
+
+				model.addAttribute("questionlist", questionAnswerViewFormList);
+			}
+
+		}
 		return "upload-exam-answer-meterials";
 
-	
+	}
+
+	@PreAuthorize("hasRole('ROLE_USERS')")
+	@RequestMapping(value = "/exam-answer-metrials", method = RequestMethod.POST)
+	public String meterialAnsPostPage(@ModelAttribute("metrialsAnswerForm") MetrialsAnswerForm metrialsAnswerForm,
+			Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+
+			if (metrialsAnswerForm.getAnswerFileName().getContentType().toLowerCase().equals("application/pdf")) {
+				
+				
+				
+
+				if (metrialsAnswerForm.getQuestionAnswerId() != null) {
+					
+					
+					EndUserDetails userDetails = (EndUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+					QuestionMasterEntity questionlist =questionAnswerService.getAllUploadedQuestionsById(metrialsAnswerForm.getQuestionAnswerId());
+					 
+					
+
+					if (questionlist!=null) {
+
+						if (metrialsAnswerForm.getAnswerFileName() != null
+								&& !metrialsAnswerForm.getAnswerFileName().isEmpty()) {
+							String random = null;
+							randomGenerator = new RandomGeneratorImpl(DEFAULT_RANDOM_LENGTH);
+							random = randomGenerator.generateToken();
+
+							StringBuilder dirPath = new StringBuilder().append(File.separator).append("resources")
+									.append(File.separator);
+
+							StringBuilder pathtostring = new StringBuilder()
+									.append(context.getRealPath(dirPath.toString())).append(File.separator)
+									.append("MetrialsUploads").append(File.separator);
+
+							Path pathupload = Paths.get(pathtostring.toString());
+							if (!Files.exists(pathupload)) {
+								try {
+									Files.createDirectories(pathupload);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+
+							StringBuilder idpathtostring = new StringBuilder().append(pathtostring)
+									.append("AnswersSheets").append(File.separator);
+							Path pathId = Paths.get(idpathtostring.toString());
+							if (!Files.exists(pathId)) {
+								try {
+									Files.createDirectories(pathId);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+
+							StringBuilder questionpathtostring = new StringBuilder().append(idpathtostring.toString())
+									.append(random).append(File.separator);
+							Path pathQuestion = Paths.get(questionpathtostring.toString());
+							if (!Files.exists(pathQuestion)) {
+								try {
+									Files.createDirectories(pathQuestion);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+
+							try {
+
+								Files.write(
+										Paths.get(questionpathtostring.toString() + random + "."
+												+ FilenameUtils.getExtension(
+														metrialsAnswerForm.getAnswerFileName().getOriginalFilename())),
+										metrialsAnswerForm.getAnswerFileName().getBytes());
+								QuestionAnswerEntity questionAnswerEntity=new QuestionAnswerEntity();
+								questionAnswerEntity.setMeterialName(questionlist.getQuestionName());
+								questionAnswerEntity.setMeterialTitle(questionlist.getQuestionTitle());
+								questionAnswerEntity.setBatch(questionlist.getBatch());
+								questionAnswerEntity.setCourseCategory(questionlist.getCourseCategory().toString());
+								questionAnswerEntity.setQuestionCreatedby(questionlist.getQuestionCreatedby());
+								questionAnswerEntity.setQuestionCreatedDate(questionlist.getQuestionCreatedDate());
+								questionAnswerEntity.setQuestionFileExt(questionlist.getQuestionFileExt());
+								questionAnswerEntity.setQuestionFileName(questionlist.getQuestionFileName());
+								questionAnswerEntity.setQuestionFolderId(questionlist.getQuestionFolderId());
+								questionAnswerEntity.setQuestionFolderPath(questionlist.getQuestionFolderPath());
+								questionAnswerEntity.setAnswered(true);
+								questionAnswerEntity.setAnswerCreatedByEmail(userDetails.getEmail());
+								questionAnswerEntity.setDescription(questionlist.getDescription());
+								questionAnswerEntity.setQuestionId(metrialsAnswerForm.getQuestionAnswerId());
+								 if(!StringUtils.isEmpty(userDetails.getMiddleName())) {
+					                	
+					                	questionAnswerEntity.setAnswerCreatedByName(new StringBuilder().append(userDetails.getFirstName()).append(" ").append(userDetails.getMiddleName()).append(" ").append(userDetails.getLastName()).toString().toUpperCase());
+					                	
+					                }else {
+					                	
+					                	questionAnswerEntity.setAnswerCreatedByName(new StringBuilder().append(userDetails.getFirstName()).append(" ").append(userDetails.getLastName()).toString().toUpperCase());
+					                	
+					                }
+								questionAnswerEntity.setAnswerCreatedByRollNo(userDetails.getRollNo());
+								questionAnswerEntity.setAnswerCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
+								questionAnswerEntity.setAnswerFileExt(FilenameUtils
+										.getExtension(metrialsAnswerForm.getAnswerFileName().getOriginalFilename()));
+								questionAnswerEntity.setAnswerFileName(
+										metrialsAnswerForm.getAnswerFileName().getOriginalFilename());
+								questionAnswerEntity.setAnswerFolderId(random);
+								questionAnswerEntity.setAnswerFolderPath(
+										"/resources/MetrialsUploads/AnswersSheets/" + random + "/");
+
+								int saveCount = questionAnswerService.uploadAnswerFile(questionAnswerEntity);
+
+								if (saveCount == 0) {
+
+									model.addAttribute(
+											com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.SUCCESS_KEY,
+											"You successfully uploaded "
+													+ metrialsAnswerForm.getAnswerFileName().getOriginalFilename());
+								} else if (saveCount == 1) {
+
+									model.addAttribute(
+											com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
+											"You un-successfully not uploaded "
+													+ metrialsAnswerForm.getAnswerFileName().getOriginalFilename());
+
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
+						}
+
+					}
+
+				}
+
+			} else {
+				MetrialsQuestionForm metrialsQuestionForm2 = new MetrialsQuestionForm();
+				model.addAttribute("metrialsQuestionForm", metrialsQuestionForm2);
+				model.addAttribute(com.online.videostreaming.classrooms.onlineclassrooms.constants.Constants.ERROR_KEY,
+						"You can upload only PDF file. Please choose PDF file for Upload");
+
+			}
+
+			List<QuestionMasterEntity> questionlist = questionAnswerService.getAllUploadedQuestions();
+
+			EndUserDetails userDetails = (EndUserDetails) SecurityContextHolder.getContext().getAuthentication()
+					.getPrincipal();
+
+			if (questionlist != null && questionlist.size() != 0) {
+
+				List<QuestionAnswerViewForm> questionAnswerViewFormList = new ArrayList<QuestionAnswerViewForm>();
+				for (QuestionMasterEntity obj : questionlist) {
+					if (Integer.parseInt(obj.getBatch()) == Integer.parseInt(userDetails.getBatch())) {
+						QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
+						questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionId());
+						questionAnswerViewForm.setMeterialName(obj.getQuestionName());
+						questionAnswerViewForm.setMeterialTitle(obj.getQuestionTitle());
+
+						if (Integer.parseInt(obj.getBatch()) == 1 || Integer.parseInt(obj.getBatch()) == 2) {
+
+							questionAnswerViewForm
+									.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
+
+						} else if (Integer.parseInt(obj.getBatch()) == 3 || Integer.parseInt(obj.getBatch()) == 4) {
+
+							questionAnswerViewForm
+									.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
+
+						}
+
+						questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
+						questionAnswerViewForm.setDescription(
+								obj.getDescription().length() > 400 ? obj.getDescription().substring(0, 400) + "...."
+										: obj.getDescription());
+						questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
+						questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
+						questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
+						questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
+						questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
+						questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
+						QuestionAnswerEntity questionMaster =questionAnswerService.getAllUploadedQuestionAnswersById(obj.getQuestionId(),userDetails.getEmail(),userDetails.getRollNo());
+						if(questionMaster!=null) {
+							
+							questionAnswerViewForm.setAnswerGiven(questionMaster.isAnswered());
+						}else {
+							
+							questionAnswerViewForm.setAnswerGiven(false);
+						}
+						
+						questionAnswerViewFormList.add(questionAnswerViewForm);
+					}
+
+				}
+
+				model.addAttribute("questionlist", questionAnswerViewFormList);
+			}
+
+		}
+		return "upload-exam-answer-meterials";
 
 	}
-	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/view-exam-question-answer-metrials", method = RequestMethod.GET)
-	public String meterialQestAnsGetPage(Model model, HttpServletRequest request, HttpServletResponse response)
+	public String meterialQestAnsGetPage(@ModelAttribute("searchForm") SearchForm searchForm,Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		
-		 List<QuestionAnswerEntity> questionlist =questionAnswerService.getAllUploadedQuestionAnswers();
-		 if(questionlist!=null && questionlist.size()!=0) {
-			 List<QuestionAnswerViewForm> questionAnswerViewFormList=new ArrayList<QuestionAnswerViewForm>();
-			 questionAnswerViewFormList= questionlist.stream().map(obj->{
-				 QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
-				 questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionAnswerId());
-				 questionAnswerViewForm.setMeterialName(obj.getMeterialName());
-				 questionAnswerViewForm.setMeterialTitle(obj.getMeterialTitle());
-				 
-				 if(Integer.parseInt(obj.getBatch())==1 || Integer.parseInt(obj.getBatch()) ==2 ) {
-						
-					 questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
-						
-						
-					}else if(Integer.parseInt(obj.getBatch())==3 || Integer.parseInt(obj.getBatch()) ==4 ) {
-						
-						
-						questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
-						
-					}
-				 
-				 questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
-				 questionAnswerViewForm.setDescription(obj.getDescription().length()>400?obj.getDescription().substring(0, 400)+"....":obj.getDescription() );
-				 questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
-				 questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
-				 questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
-				 questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
-				 questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
-				 questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
-				 questionAnswerViewForm.setAnswerCreatedByEmail(obj.getAnswerCreatedByEmail());
-				 questionAnswerViewForm.setAnswerCreatedByUserId(obj.getAnswerCreatedByUserId());
-				 questionAnswerViewForm.setAnswerCreatedDate(obj.getAnswerCreatedDate());
-				 questionAnswerViewForm.setAnswerGiven(obj.isAnswered());
-				 questionAnswerViewForm.setAnswerFileExt(obj.getAnswerFileExt());
-				 questionAnswerViewForm.setAnswerFileName(obj.getAnswerFileName());
-				 questionAnswerViewForm.setAnswerFolderId(obj.getAnswerFolderId());
-				 questionAnswerViewForm.setAnswerFolderPath(obj.getAnswerFolderPath());
-				 
-				 return questionAnswerViewForm;
-				 
-			 }).collect(Collectors.toList()); 
-			 model.addAttribute("finalList",questionAnswerViewFormList);
-		 }
-		
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+		List<QuestionAnswerEntity> questionlist = questionAnswerService.getAllUploadedQuestionAnswers();
+		if (questionlist != null && questionlist.size() != 0) {
+			List<QuestionAnswerViewForm> questionAnswerViewFormList = new ArrayList<QuestionAnswerViewForm>();
+			questionAnswerViewFormList = questionlist.stream().map(obj -> {
+				QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
+				questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionAnswerId());
+				questionAnswerViewForm.setMeterialName(obj.getMeterialName());
+				questionAnswerViewForm.setMeterialTitle(obj.getMeterialTitle());
+
+				if (Integer.parseInt(obj.getBatch()) == 1 || Integer.parseInt(obj.getBatch()) == 2) {
+
+					questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
+
+				} else if (Integer.parseInt(obj.getBatch()) == 3 || Integer.parseInt(obj.getBatch()) == 4) {
+
+					questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
+
+				}
+
+				questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
+				
+				if(obj.getDescription()!=null) {
+					questionAnswerViewForm.setDescription(
+							obj.getDescription().length() > 400 ? obj.getDescription().substring(0, 400) + "...."
+									: obj.getDescription());
+					
+				}else {
+					
+					questionAnswerViewForm.setDescription(null);
+				}
+				
+				questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
+				questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
+				questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
+				questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
+				questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
+				questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
+				questionAnswerViewForm.setAnswerCreatedByEmail(obj.getAnswerCreatedByEmail());
+				questionAnswerViewForm.setAnswerCreatedByName(obj.getAnswerCreatedByName());
+				questionAnswerViewForm.setAnswerCreatedByRollNo(obj.getAnswerCreatedByRollNo());
+				questionAnswerViewForm.setAnswerCreatedDate(obj.getAnswerCreatedDate());
+				questionAnswerViewForm.setAnswerGiven(obj.isAnswered());
+				questionAnswerViewForm.setAnswerFileExt(obj.getAnswerFileExt());
+				questionAnswerViewForm.setAnswerFileName(obj.getAnswerFileName());
+				questionAnswerViewForm.setAnswerFolderId(obj.getAnswerFolderId());
+				questionAnswerViewForm.setAnswerFolderPath(obj.getAnswerFolderPath());
+
+				return questionAnswerViewForm;
+
+			}).collect(Collectors.toList());
+			model.addAttribute("finalList", questionAnswerViewFormList);
+			model.addAttribute("batch", Batch.mappings.entrySet().stream()
+					.sorted((Map.Entry.<Integer, String>comparingByValue().reversed()))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
+		}
+		}
 		return "view-edit-question-answer-page";
 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/view-exam-question-answer-metrials", method = RequestMethod.POST)
+	public String meterialQestAnsPostPage(@ModelAttribute("searchForm") SearchForm searchForm,Model model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+			
+			
+			List<QuestionAnswerEntity> questionlist = questionAnswerService.getAllUploadedQuestionAnswersByKeyword(searchForm);
+			if (questionlist != null && questionlist.size() != 0) {
+				List<QuestionAnswerViewForm> questionAnswerViewFormList = new ArrayList<QuestionAnswerViewForm>();
+				questionAnswerViewFormList = questionlist.stream().map(obj -> {
+					QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
+					questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionAnswerId());
+					questionAnswerViewForm.setMeterialName(obj.getMeterialName());
+					questionAnswerViewForm.setMeterialTitle(obj.getMeterialTitle());
+
+					if (Integer.parseInt(obj.getBatch()) == 1 || Integer.parseInt(obj.getBatch()) == 2) {
+
+						questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
+
+					} else if (Integer.parseInt(obj.getBatch()) == 3 || Integer.parseInt(obj.getBatch()) == 4) {
+
+						questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
+
+					}
+
+					questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
+					
+					if(obj.getDescription()!=null) {
+						questionAnswerViewForm.setDescription(
+								obj.getDescription().length() > 400 ? obj.getDescription().substring(0, 400) + "...."
+										: obj.getDescription());
+						
+					}else {
+						
+						questionAnswerViewForm.setDescription(null);
+					}
+					
+					questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
+					questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
+					questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
+					questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
+					questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
+					questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
+					questionAnswerViewForm.setAnswerCreatedByEmail(obj.getAnswerCreatedByEmail());
+					questionAnswerViewForm.setAnswerCreatedByName(obj.getAnswerCreatedByName());
+					questionAnswerViewForm.setAnswerCreatedByRollNo(obj.getAnswerCreatedByRollNo());
+					questionAnswerViewForm.setAnswerCreatedDate(obj.getAnswerCreatedDate());
+					questionAnswerViewForm.setAnswerGiven(obj.isAnswered());
+					questionAnswerViewForm.setAnswerFileExt(obj.getAnswerFileExt());
+					questionAnswerViewForm.setAnswerFileName(obj.getAnswerFileName());
+					questionAnswerViewForm.setAnswerFolderId(obj.getAnswerFolderId());
+					questionAnswerViewForm.setAnswerFolderPath(obj.getAnswerFolderPath());
+
+					return questionAnswerViewForm;
+
+				}).collect(Collectors.toList());
+				model.addAttribute("finalList", questionAnswerViewFormList);
+				
+			}
+			model.addAttribute("batch", Batch.mappings.entrySet().stream()
+					.sorted((Map.Entry.<Integer, String>comparingByValue().reversed()))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
+		}
+		
+		
+		return "view-edit-question-answer-page";
+	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/view-exam-question-sheet", method = RequestMethod.GET)
 	public String viewEditQestGetPage(Model model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		
-		 List<QuestionMasterEntity> questionlist =questionAnswerService.getAllUploadedQuestions();
-		 if(questionlist!=null && questionlist.size()!=0) {
-			 List<QuestionAnswerViewForm> questionAnswerViewFormList=new ArrayList<QuestionAnswerViewForm>();
-			 questionAnswerViewFormList= questionlist.stream().map(obj->{
-				 QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
-				 questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionId());
-				 questionAnswerViewForm.setMeterialName(obj.getQuestionName());
-				 questionAnswerViewForm.setMeterialTitle(obj.getQuestionTitle());
-				 if(Integer.parseInt(obj.getBatch())==1 || Integer.parseInt(obj.getBatch()) ==2 ) {
-					 questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
-						
-					}else if(Integer.parseInt(obj.getBatch())==3 || Integer.parseInt(obj.getBatch()) ==4 ) {
-						
-						questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
-					}
-				 questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
-				 questionAnswerViewForm.setDescription(obj.getDescription().length()>400?obj.getDescription().substring(0, 400)+"....":obj.getDescription() );
-				 questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
-				 questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
-				 questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
-				 questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
-				 questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
-				 questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
-				 
-				 
-				 return questionAnswerViewForm;
-				 
-			 }).collect(Collectors.toList()); 
-			 model.addAttribute("finalList",questionAnswerViewFormList);
-		 }
-		
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+		List<QuestionMasterEntity> questionlist = questionAnswerService.getAllUploadedQuestions();
+		if (questionlist != null && questionlist.size() != 0) {
+			List<QuestionAnswerViewForm> questionAnswerViewFormList = new ArrayList<QuestionAnswerViewForm>();
+			questionAnswerViewFormList = questionlist.stream().map(obj -> {
+				QuestionAnswerViewForm questionAnswerViewForm = new QuestionAnswerViewForm();
+				questionAnswerViewForm.setQuestionAnswerId(obj.getQuestionId());
+				questionAnswerViewForm.setMeterialName(obj.getQuestionName());
+				questionAnswerViewForm.setMeterialTitle(obj.getQuestionTitle());
+				if (Integer.parseInt(obj.getBatch()) == 1 || Integer.parseInt(obj.getBatch()) == 2) {
+					questionAnswerViewForm.setCourseCategory(CourseCategory.mappings.get(obj.getCourseCategory()));
+
+				} else if (Integer.parseInt(obj.getBatch()) == 3 || Integer.parseInt(obj.getBatch()) == 4) {
+
+					questionAnswerViewForm.setCourseCategory(CourseCategory2.mappings.get(obj.getCourseCategory()));
+				}
+				questionAnswerViewForm.setBatch(Batch.mappings.get(Integer.parseInt(obj.getBatch())));
+				questionAnswerViewForm.setDescription(
+						obj.getDescription().length() > 400 ? obj.getDescription().substring(0, 400) + "...."
+								: obj.getDescription());
+				questionAnswerViewForm.setQuestionFileName(obj.getQuestionFileName());
+				questionAnswerViewForm.setQuestionFolderId(obj.getQuestionFolderId());
+				questionAnswerViewForm.setQuestionFileExt(obj.getQuestionFileExt());
+				questionAnswerViewForm.setQuestionCreatedDate(obj.getQuestionCreatedDate());
+				questionAnswerViewForm.setQuestionCreatedby(obj.getQuestionCreatedby());
+				questionAnswerViewForm.setQuestionFolderPath(obj.getQuestionFolderPath());
+
+				return questionAnswerViewForm;
+
+			}).collect(Collectors.toList());
+			model.addAttribute("finalList", questionAnswerViewFormList);
+		}
+		}
 		return "view-exam-question-sheet";
 
 	}
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USERS')")
 	@RequestMapping(value = "/downloadSheets", method = RequestMethod.GET)
-	public ResponseEntity<Object> downloadSheets(@RequestParam(value = "folderId",required = true)String folderId,
-			@RequestParam(value = "action",required = true)String action,Model model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-				
-		
-		
-		
-			
-			
-			if(action.trim().equals("QUESTION")) {
-				Optional<QuestionMasterEntity> questionMasterEntity=questionAnswerService.downloadQuestionSheets(folderId, action);
-				if(questionMasterEntity.isPresent()) {
-					
-					Path path = Paths.get(context.getRealPath(questionMasterEntity.get().getQuestionFolderPath() + questionMasterEntity.get().getQuestionFolderId()+"."+questionMasterEntity.get().getQuestionFileExt()));
-					Resource resource = null;
-					try {
-						resource = new UrlResource(path.toUri());
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
-					return ResponseEntity.ok()
-							.contentType(MediaType.parseMediaType("application/pdf"))
-							.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-							.body(resource);
-					
+	public ResponseEntity<Object> downloadSheets(@RequestParam(value = "folderId", required = true) String folderId,
+			@RequestParam(value = "action", required = true) String action, Model model, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession(true);
+		SecurityContext securityContext = (SecurityContext) session
+				.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+		SecurityContextHolder.setContext(ctx);
+		ctx.setAuthentication(securityContext.getAuthentication());
+
+		if (SecurityContextHolder.getContext().getAuthentication() != null
+				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+		if (action.trim().equals("QUESTION")) {
+			Optional<QuestionMasterEntity> questionMasterEntity = questionAnswerService.downloadQuestionSheets(folderId,
+					action);
+			if (questionMasterEntity.isPresent()) {
+
+				Path path = Paths.get(context.getRealPath(questionMasterEntity.get().getQuestionFolderPath()
+						+ questionMasterEntity.get().getQuestionFolderId() + "."
+						+ questionMasterEntity.get().getQuestionFileExt()));
+				Resource resource = null;
+				try {
+					resource = new UrlResource(path.toUri());
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
-				
-				
-				
-			}else if(action.trim().equals("ANSWER")) {
-				
-				
-				Optional<QuestionAnswerEntity> questionAnswerEntity=questionAnswerService.downloadSheets(folderId, action);
-				if(questionAnswerEntity.isPresent()) {
-					
-					Path path = Paths.get(context.getRealPath(questionAnswerEntity.get().getAnswerFolderPath() + questionAnswerEntity.get().getAnswerFolderId()+"."+questionAnswerEntity.get().getAnswerFileExt()));
-					
-					Resource resource = null;
-					try {
-						resource = new UrlResource(path.toUri());
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
-					return ResponseEntity.ok()
-							.contentType(MediaType.parseMediaType("application/pdf"))
-							.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-							.body(resource);
-					
-				}
-				
-				
-				
+				return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
+						.header(HttpHeaders.CONTENT_DISPOSITION,
+								"attachment; filename=\"" + resource.getFilename() + "\"")
+						.body(resource);
+
 			}
-			
-	
-		
-		
-		
-		return ResponseEntity.ok()
-				.contentType(MediaType.parseMediaType("application/pdf"))
+
+		} else if (action.trim().equals("ANSWER")) {
+
+			Optional<QuestionAnswerEntity> questionAnswerEntity = questionAnswerService.downloadSheets(folderId,
+					action);
+			if (questionAnswerEntity.isPresent()) {
+
+				Path path = Paths.get(context.getRealPath(questionAnswerEntity.get().getAnswerFolderPath()
+						+ questionAnswerEntity.get().getAnswerFolderId() + "."
+						+ questionAnswerEntity.get().getAnswerFileExt()));
+
+				Resource resource = null;
+				try {
+					resource = new UrlResource(path.toUri());
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
+						.header(HttpHeaders.CONTENT_DISPOSITION,
+								"attachment; filename=\"" + resource.getFilename() + "\"")
+						.body(resource);
+
+			}
+
+		}
+		}
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=File-Not-Exist")
 				.body("File Not Exist...Please contact to administrator");
-		
-		
-		
-		
+
 	}
-	
+
 }

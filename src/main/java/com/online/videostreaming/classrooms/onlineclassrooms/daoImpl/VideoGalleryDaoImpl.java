@@ -2,6 +2,7 @@ package com.online.videostreaming.classrooms.onlineclassrooms.daoImpl;
 
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -11,6 +12,8 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import com.online.videostreaming.classrooms.onlineclassrooms.dao.VideoGalleryDao;
+import com.online.videostreaming.classrooms.onlineclassrooms.entity.CommentReply;
+import com.online.videostreaming.classrooms.onlineclassrooms.entity.VideoComment;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.VideoUploadEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.utils.HibernateSessionUtils;
 
@@ -152,6 +155,73 @@ public class VideoGalleryDaoImpl extends HibernateSessionUtils implements VideoG
 		{
 			closeSession();
 		}
+	}
+
+	@Override
+	public boolean saveComment(VideoComment vc) throws Exception {
+		
+		try
+		{
+			Session session = currentSession();
+			beginTransaction();
+			session.save(vc);
+			
+			commitTransaction();
+		}
+		catch(Exception e){
+			rollbackTransaction();
+			e.printStackTrace();
+			return false;
+		}
+		finally{
+			closeSession();
+		}
+		return true;
+	}
+
+
+	@Override
+	public boolean saveReply(CommentReply cr) throws Exception {
+		try
+		{
+			Session session = currentSession();
+			beginTransaction();
+			session.save(cr);
+			
+			commitTransaction();
+		}
+		catch(Exception e){
+			rollbackTransaction();
+			e.printStackTrace();
+			return false;
+		}
+		finally{
+			closeSession();
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> findVideoCommentReply(String  folderId) throws Exception {
+	
+		try
+		{
+			Session session = currentSession();
+			StringBuilder sb=new StringBuilder();
+			sb.append("SELECT vc.folderid,vc.video_comment_id,vc.comment,cr.reply,vc.created_by as created_by2,vc.created_date as created_date2,cr.created_by as created_by1,cr.created_date as created_date1 FROM video_gallary vg");
+			sb.append(" INNER JOIN video_comment vc ON vc.folderid=vg.folder_id");
+			sb.append(" LEFT JOIN  comment_reply cr ON  cr.comment_id=vc.video_comment_id");
+			sb.append(" WHERE vg.folder_id=:folderId order by vc.video_comment_id desc");
+			Query query = session.createNativeQuery(sb.toString());
+			query.setParameter("folderId", folderId);
+			return query.getResultList();
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

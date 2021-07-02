@@ -20,7 +20,7 @@ public EndUserDetails(UsersEntity user) {
     super(user.getUserId(), user.getFirstName(),user.getMiddleName(),user.getLastName(),user.getEmail(), user.getUserPassword(),
             user.getRoles(), user.getPhone(), user.getDeactivatedReason(), user.getBatch(),user.getCorrespondanceAddress(),
             user.getPermanentAddress(), user.getFatherName(), user.getMiddleName(),
-            user.getFailedAttempt(),user.getIsAccountNonLocked(),user.getLockTime());
+            user.getFailedAttempt(),user.getIsAccountNonLocked(),user.getLockTime(),user.getRollNo());
   }
 
   @Override

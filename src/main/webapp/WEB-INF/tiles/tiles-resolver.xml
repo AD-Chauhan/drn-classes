@@ -4,6 +4,10 @@
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 
 <tiles-definitions>
+
+    <definition name="welcome" template="/layout/Users/wlayout.jsp">
+  		<put-attribute name="body" value="/pages/Home/welcomejsp.jsp" /> 
+  	</definition>
  	<definition name="home-page" template="/layout/Users/layout.jsp">
   		<put-attribute name="body" value="/pages/Home/home.jsp" /> 
   	</definition>

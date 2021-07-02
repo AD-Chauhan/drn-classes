@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.online.videostreaming.classrooms.onlineclassrooms.drnusers.EndUserDetails;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.BlogUploadEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.entity.VideoUploadEntity;
 import com.online.videostreaming.classrooms.onlineclassrooms.enums.CourseCategory;
@@ -53,9 +54,45 @@ public class HomeController {
 		
 		List<VideoUploadEntity> finallist=videoGalleryService.getAllUploadedVideos();
 		if(finallist!=null && !finallist.isEmpty()) {
+			List<VideoUploadForm> videolist=new ArrayList<VideoUploadForm>();
 			
-			Map<String,List<VideoUploadForm>> sortedMemberMapKeyByName=getKeyValueMap(finallist.stream().map(mapper->{
+			  EndUserDetails userDetails = (EndUserDetails)
+			  SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
+			 
+			for(VideoUploadEntity mapper:finallist) {
 				
+				 if(mapper.getBatch().equals(userDetails.getBatch())) { 
+					VideoUploadForm videoUploadEntity=new VideoUploadForm();
+					videoUploadEntity.setCourseCategory(mapper.getCourseCategory());
+					videoUploadEntity.setVideoName(mapper.getVideoName());
+					videoUploadEntity.setVideoTitle(mapper.getVideoTitle());
+					videoUploadEntity.setThumbnailPath(mapper.getThumbnailPath());
+					videoUploadEntity.setThumbnailFileName(mapper.getThumbnailFileName());
+					videoUploadEntity.setEncryptdata(mapper.getFolderId());
+					videolist.add(videoUploadEntity);
+					
+					 } 
+				
+				
+			}
+			model.addAttribute("finalList", getKeyValueMap(videolist));
+			
+		}
+		List<BlogUploadEntity> finalList=blogService.getAllUploadedBlogsByLimit();
+		model.addAttribute("record", finalList);
+		 } 
+		return "home-page";
+
+	}
+	
+	@RequestMapping(value = "/welcome", method = RequestMethod.GET)
+	public String welcome(Model model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		
+		List<VideoUploadEntity> finallist=videoGalleryService.getAllUploadedVideos();
+		if(finallist!=null && !finallist.isEmpty()) {
+			List<VideoUploadForm> videolist=new ArrayList<VideoUploadForm>();
+			videolist=finallist.stream().limit(3).sorted((b1,b2)->b1.getVideoName().compareTo(b2.getVideoName())).map(mapper->{
 				VideoUploadForm videoUploadEntity=new VideoUploadForm();
 				videoUploadEntity.setCourseCategory(mapper.getCourseCategory());
 				videoUploadEntity.setVideoName(mapper.getVideoName());
@@ -64,15 +101,15 @@ public class HomeController {
 				videoUploadEntity.setThumbnailFileName(mapper.getThumbnailFileName());
 				videoUploadEntity.setEncryptdata(mapper.getFolderId());
 				return videoUploadEntity;
-				
-			}).collect(Collectors.toList()));
-			model.addAttribute("finalList", sortedMemberMapKeyByName);
+					
+			}).collect(Collectors.toList());
 			
+			model.addAttribute("finalList", videolist);
 		}
+	
 		List<BlogUploadEntity> finalList=blogService.getAllUploadedBlogsByLimit();
 		model.addAttribute("record", finalList);
-		}
-		return "home-page";
+		return "welcome";
 
 	}
 	
@@ -126,7 +163,7 @@ public class HomeController {
 				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
 				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
 		List<BlogUploadEntity> finalList=blogService.getAllUploadedBlogsByLimit();
-		model.addAttribute("finalList", finalList);
+		model.addAttribute("record", finalList);
 		}
 		return "blog-details";
 
@@ -162,25 +199,37 @@ public class HomeController {
 		if (SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
 				&& !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
-		List<VideoUploadEntity> finallist=videoGalleryService.getAllUploadedVideos();
-		if(finallist!=null && !finallist.isEmpty()) {
 			
-			Map<String,List<VideoUploadForm>> sortedMemberMapKeyByName=getKeyValueMap(finallist.stream().map(mapper->{
-				
-				VideoUploadForm videoUploadEntity=new VideoUploadForm();
-				videoUploadEntity.setCourseCategory(mapper.getCourseCategory());
-				videoUploadEntity.setVideoName(mapper.getVideoName());
-				videoUploadEntity.setVideoTitle(mapper.getVideoTitle());
-				videoUploadEntity.setThumbnailPath(mapper.getThumbnailPath());
-				videoUploadEntity.setThumbnailFileName(mapper.getThumbnailFileName());
-				videoUploadEntity.setEncryptdata(mapper.getFolderId());
-				return videoUploadEntity;
-				
-			}).collect(Collectors.toList()));
-			model.addAttribute("finalList", sortedMemberMapKeyByName);
 			
-		}
-		
+
+			
+			List<VideoUploadEntity> finallist=videoGalleryService.getAllUploadedVideos();
+			if(finallist!=null && !finallist.isEmpty()) {
+				List<VideoUploadForm> videolist=new ArrayList<VideoUploadForm>();
+				EndUserDetails userDetails = (EndUserDetails) SecurityContextHolder.getContext().getAuthentication()
+						.getPrincipal();
+				for(VideoUploadEntity mapper:finallist) {
+					
+					if(mapper.getBatch().equals(userDetails.getBatch())) {
+						VideoUploadForm videoUploadEntity=new VideoUploadForm();
+						videoUploadEntity.setCourseCategory(mapper.getCourseCategory());
+						videoUploadEntity.setVideoName(mapper.getVideoName());
+						videoUploadEntity.setVideoTitle(mapper.getVideoTitle());
+						videoUploadEntity.setThumbnailPath(mapper.getThumbnailPath());
+						videoUploadEntity.setThumbnailFileName(mapper.getThumbnailFileName());
+						videoUploadEntity.setEncryptdata(mapper.getFolderId());
+						videolist.add(videoUploadEntity);
+						
+					}
+					
+					
+				}
+				model.addAttribute("finalList", getKeyValueMap(videolist));
+				
+			}
+			
+			
+			
 		}
 		return "course-details";
 

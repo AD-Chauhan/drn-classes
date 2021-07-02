@@ -5,77 +5,118 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/security/tags"
 	prefix="sec"%>
+<script type="text/javascript">
 
+var loggedUser = '<%=(String)session.getAttribute("loggedUser") %>';
+$(function(){
+	  
+    $("#loggedUser").text(loggedUser);
 
-<div id="apus-main-content">
-	<section id="apus-breadscrumb"
-		class="breadcrumb-page apus-breadscrumb has_bg"
-		style="background-image: url('./resources/img/bg_1.jpg')">
+});
+</script>
+<main>
+<section class="  parallax parallax1" >
+<div class="parallax_cnt" style="padding-top: 49px;
+    padding-bottom: 17px;
+    background-size: cover !important;
+    background-position: 0 0;
+    background-image: -webkit-linear-gradient(left, #84858f 0%, #c7ad83 100%) !important;
+    background-repeat: repeat-x !important;
+    text-transform: uppercase;
+    text-align: left;
+    height: 360px !important;">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3 col-md-offset-1 col-sm-12 text-right center991">
+              <img src="<%=request.getContextPath()%>/resources/Users/images/logo-white.png" alt="">
+              <label style="text-transform: none;
+    font-size: 25px;
+    display: block;
+    color: #021827;
+    margin-top: -51px !important;
+    font-weight: 900 !important;
+    margin-left: -76px;" >Prayagraj</label>
+            </div>
+            <div class="col-md-8 col-sm-12 center991">
+              <div class="wrap">
+               
+                <small style="font-size: 26px !important;
+    margin-top: 39px;
+    color: #121312;
+    font-weight: 500;">
+                DRN Classes Are Educational Institutions Operating With The Exclusive Objective Of Preparing Students For Class 9, 10, 11, 12 Examinations
+                </small>
+    <p style="display: inline-flex !important;
+    font-size: 20px !important;color: #f3ba31;"  class="btn btn-primary btn-lg">Logged Student:&nbsp; <span id="loggedUser" style="color: #ffffff !important; text-transform: uppercase !important;">
+   </span></p>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div></section>
+	<section class="bg-secondary3" style="padding: 25px;
+    background-size: cover !important;
+    background-position: 0 0;
+    background-image: -webkit-linear-gradient(left, #e63f17e0 0%, #004471c7 100%) !important;
+    background-repeat: repeat-x !important;">
 		<div class="container">
-			<div class="wrapper-breads">
-				<div class="wrapper-breads-inner">
-					<h2 class="bread-title">The Blogs</h2>
-
+			<div class="wrap">
+				<div class="cnt" style="margin-top: 20px !important;">
+					<h5>${record[0].blogTitle}</h5>
+					<p>${record[0].blogTitle}</p>
+					<a href="<%=request.getContextPath()%>/blog-details"
+						class="btn-link-1">show more</a>
 				</div>
+				<div class=" wow fadeInRight" data-wow-duration='2s' style="margin-top: 20px !important;width: 574px !important;
+    margin-left: 11px; !important">
+					<img style="height: 381px !important;"
+						src="<%=request.getContextPath()%>${record[0].originalPath}${record[0].originalFileName}"
+						alt="">
+				</div>
+				<div class=" wow fadeInLeft" data-wow-duration='2s' style="margin-top: 20px !important;">
+					<img style="height: 381px !important;"
+						src="<%=request.getContextPath()%>${record[1].originalPath}${record[1].originalFileName}"
+						alt="">
+				</div>
+				<div class="cnt" style="margin-top: 20px !important;width: 574px !important;
+    margin-left: 11px; !important">
+					<h5>${record[1].blogTitle}</h5>
+					<p>${record[1].blogTitle}</p>
+					<a href="<%=request.getContextPath()%>/blog-details"
+						class="btn-link-1">show more</a>
+				</div>
+
+
+			</div>
+			<div class="wrap">
+				<div class="cnt" style="margin-top: 20px !important;">
+					<h5>${record[2].blogTitle}</h5>
+					<p>${record[2].blogTitle}</p>
+					<a href="<%=request.getContextPath()%>/blog-details"
+						class="btn-link-1">show more</a>
+				</div>
+				<div class=" wow fadeInRight" data-wow-duration='2s' style="margin-top: 20px !important;width: 574px !important;
+    margin-left: 11px; !important">
+					<img style="height: 381px !important;"
+						src="<%=request.getContextPath()%>${record[2].originalPath}${record[2].originalFileName}"
+						alt="">
+				</div>
+				<div class=" wow fadeInLeft" data-wow-duration='2s' style="margin-top: 20px !important;">
+					<img style="height: 381px !important;"
+						src="<%=request.getContextPath()%>${record[3].originalPath}${record[3].originalFileName}"
+						alt="">
+				</div>
+				<div class="cnt" style="margin-top: 20px !important;width: 574px !important;
+    margin-left: 11px; !important">
+					<h5>${record[3].blogTitle}</h5>
+					<p>${record[3].blogTitle}</p>
+					<a href="<%=request.getContextPath()%>/blog-details"
+						class="btn-link-1">show more</a>
+				</div>
+
+
 			</div>
 		</div>
 	</section>
-	<section id="main-container"
-		class="main-content home-page-default container inner">
 
-
-		<div class="row">
-			<div id="main-content" class="col-sm-12 col-md-9 col-sm-12 col-xs-12">
-				<div id="main" class="site-main layout-blog" role="main">
-
-					<div class="layout-blog">
-						<div class="row">
-						
-						<c:if test="${!empty finalList}">
-						<c:forEach items="${finalList}" varStatus="index" var="record">
-							<div class="col-sm-12 col-xs-12   col-xs-12">
-								<article
-									class="post post-layout post-grid-v1 post-4440 type-post status-publish format-standard has-post-thumbnail hentry category-engineering tag-beginner tag-photoshop tag-sketch tag-ux-ui">
-									<div class="top-info-detail">
-										<div class="top-image">
-											<figure class="entry-thumb">
-												<div class="post-thumbnail">
-													<div class="image-wrapper">
-														<img width="1200" height="611"
-															src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D&#039;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#039; viewBox%3D&#039;0 0 1200 611&#039;%2F%3E"
-															class="attachment-1200x611x1x1 size-1200x611x1x1 unveil-image"
-															alt=""
-															data-src="<%=request.getContextPath()%>${record.originalPath}${record.originalFileName}" />
-													</div>
-												</div>
-											</figure>
-										</div>
-										<div class="entry-date-time">
-											<a href="#"> <span class="day">${record.executionTime} </span> 
-											</a>
-										</div>
-									</div>
-									<div class="list-categories">
-										<i class="fa fa-folder-open-o"></i> <a href="#"
-											class="categories-name">${record.blogTitle}</a>
-									</div>
-									<h4 class="entry-title-detail">
-										<a
-											href="#">${record.blogName}</a>
-									</h4>
-									<div class="description">${record.description}</div>
-								</article>
-							</div>
-
-</c:forEach>
-					</c:if>
-
-						</div>
-					</div>
-
-				</div>
-			</div>
-
-		</div>
-	</section>
-</div>
+    </main>

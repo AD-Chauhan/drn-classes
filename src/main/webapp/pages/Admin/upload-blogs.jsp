@@ -253,7 +253,7 @@ span.message {
 								<span class="label-text col-md-2 col-form-label text-md-right">Blog Title
 								</span>
 								<div class="col-md-10">
-									<form:input type="text" path="blogTitle" id="blogTitle" name="blogTitle" class="form-control"/> 
+									<form:input type="text" path="blogTitle" id="blogTitle" name="blogTitle" maxlength="30" class="form-control"/> 
 								</div>
 								
 							</div>
@@ -262,7 +262,7 @@ span.message {
 							<div class="form-group row">
 								<span class="label-text col-md-2 col-form-label text-md-right">Blog Name</span>
 								<div class="col-md-10">
-									<form:input type="text" path="blogName" id="blogName"  name="blogName" class="form-control "/>
+									<form:input type="text" path="blogName" id="blogName"  name="blogName" maxlength="35" class="form-control "/>
 								</div>
 							</div>
 							<hr>

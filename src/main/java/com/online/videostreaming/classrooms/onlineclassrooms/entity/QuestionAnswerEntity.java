@@ -25,6 +25,10 @@ public class QuestionAnswerEntity implements Serializable {
 	@Column(name = "questionAnswer_id")
 	private Integer questionAnswerId;
 	
+	
+	@Column(name="question_id")
+	private Integer questionId;
+	
 	@Column(name="meterial_name")
 	private String meterialName;
 	
@@ -32,7 +36,7 @@ public class QuestionAnswerEntity implements Serializable {
 	private String meterialTitle;
 	
 	@Column(name="course_category")
-	private Integer courseCategory;
+	private String courseCategory;
 	
 	@Column(name="description")
 	private String description;
@@ -79,8 +83,11 @@ public class QuestionAnswerEntity implements Serializable {
 	@Column(name="answer_folder_id")
 	private String answerFolderId;
 	
-	@Column(name = "answer_created_by_user_id")
-	private Integer answerCreatedByUserId;
+	@Column(name = "answer_created_by_name")
+	private String answerCreatedByName;
+	
+	@Column(name = "answer_created_by_rollno")
+	private String answerCreatedByRollNo;
 	
 	@Column(name="answer_created_by_email")
 	private String answerCreatedByEmail;
@@ -92,14 +99,15 @@ public class QuestionAnswerEntity implements Serializable {
 		super();
 	}
 
-	public QuestionAnswerEntity(Integer questionAnswerId, String meterialName, String meterialTitle,
-			Integer courseCategory, String description, String batch, String questionFolderPath,
+	public QuestionAnswerEntity(Integer questionAnswerId, Integer questionId, String meterialName, String meterialTitle,
+			String courseCategory, String description, String batch, String questionFolderPath,
 			String questionFileName, String questionFileExt, String questionCreatedby, Timestamp questionCreatedDate,
 			String questionFolderId, String answerFolderPath, String answerFileName, String answerFileExt,
-			boolean isAnswered, String answerFolderId, Integer answerCreatedByUserId, String answerCreatedByEmail,
-			Timestamp answerCreatedDate) {
+			boolean isAnswered, String answerFolderId, String answerCreatedByName, String answerCreatedByRollNo,
+			String answerCreatedByEmail, Timestamp answerCreatedDate) {
 		super();
 		this.questionAnswerId = questionAnswerId;
+		this.questionId = questionId;
 		this.meterialName = meterialName;
 		this.meterialTitle = meterialTitle;
 		this.courseCategory = courseCategory;
@@ -116,7 +124,8 @@ public class QuestionAnswerEntity implements Serializable {
 		this.answerFileExt = answerFileExt;
 		this.isAnswered = isAnswered;
 		this.answerFolderId = answerFolderId;
-		this.answerCreatedByUserId = answerCreatedByUserId;
+		this.answerCreatedByName = answerCreatedByName;
+		this.answerCreatedByRollNo = answerCreatedByRollNo;
 		this.answerCreatedByEmail = answerCreatedByEmail;
 		this.answerCreatedDate = answerCreatedDate;
 	}
@@ -127,6 +136,14 @@ public class QuestionAnswerEntity implements Serializable {
 
 	public void setQuestionAnswerId(Integer questionAnswerId) {
 		this.questionAnswerId = questionAnswerId;
+	}
+
+	public Integer getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(Integer questionId) {
+		this.questionId = questionId;
 	}
 
 	public String getMeterialName() {
@@ -145,11 +162,11 @@ public class QuestionAnswerEntity implements Serializable {
 		this.meterialTitle = meterialTitle;
 	}
 
-	public Integer getCourseCategory() {
+	public String getCourseCategory() {
 		return courseCategory;
 	}
 
-	public void setCourseCategory(Integer courseCategory) {
+	public void setCourseCategory(String courseCategory) {
 		this.courseCategory = courseCategory;
 	}
 
@@ -257,12 +274,20 @@ public class QuestionAnswerEntity implements Serializable {
 		this.answerFolderId = answerFolderId;
 	}
 
-	public Integer getAnswerCreatedByUserId() {
-		return answerCreatedByUserId;
+	public String getAnswerCreatedByName() {
+		return answerCreatedByName;
 	}
 
-	public void setAnswerCreatedByUserId(Integer answerCreatedByUserId) {
-		this.answerCreatedByUserId = answerCreatedByUserId;
+	public void setAnswerCreatedByName(String answerCreatedByName) {
+		this.answerCreatedByName = answerCreatedByName;
+	}
+
+	public String getAnswerCreatedByRollNo() {
+		return answerCreatedByRollNo;
+	}
+
+	public void setAnswerCreatedByRollNo(String answerCreatedByRollNo) {
+		this.answerCreatedByRollNo = answerCreatedByRollNo;
 	}
 
 	public String getAnswerCreatedByEmail() {
@@ -280,10 +305,7 @@ public class QuestionAnswerEntity implements Serializable {
 	public void setAnswerCreatedDate(Timestamp answerCreatedDate) {
 		this.answerCreatedDate = answerCreatedDate;
 	}
-	
-	
-	
-	
+
 	
 	
 }

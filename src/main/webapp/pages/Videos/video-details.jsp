@@ -77,7 +77,7 @@ function deleteFilesAndFolder(videoGallaryId){
 								<td>${record.originalFileName}</td>
 								<td>${record.courseCategory}</td>
 								<td>${record.batch}</td>
-								<td>${record.description}</td>
+								<td style="word-break: break-all;">${record.description}</td>
 								<td>${record.createdDate}</td>
 								<td>${record.createdby}</td>
 								<td><img

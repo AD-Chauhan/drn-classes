@@ -65,6 +65,13 @@ public class VideoDwrUtils {
 			return  questionAnswerService.deleteFolderAndMeterialsById(idToDelete);
 		}
 	 
+	 
+	 public String deleteQuestionById(Integer idToDelete) throws Exception {
+			
+		 
+			return  questionAnswerService.deleteQuestionById(idToDelete);
+		}
+	 
 	 public String reSubmitAnswerSheet(String answerFolderId) throws Exception {
 			
 		 

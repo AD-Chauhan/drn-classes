@@ -25,8 +25,8 @@ public abstract class VideoImageFrame {
 	public static String randomGrabberFFmpegImage(String filePath, String targerFilePath, String targetFileName, int randomSize, String random) throws Exception {
 		String filename=null;
 		FFmpegFrameGrabber ff = FFmpegFrameGrabber.createDefault(filePath);
-		ff.setImageWidth(614);
-		ff.setImageHeight(400);
+		ff.setImageWidth(370);
+		ff.setImageHeight(187);
 		ff.setImageMode(FrameGrabber.ImageMode.COLOR);
 		ff.start();
 		String rotate = ff.getVideoMetadata("rotate");

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -83,8 +84,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.requestMatchers(requestMatchers -> requestMatchers
 						.mvcMatchers(LOGIN_URL, LOGOUT_URL,"/oauth/authorize", "/oauth/confirm_access", "/token_keys",
 								"/.well-known/*", "/oauth/token/.well-known/*", "/otp_authentication",
-								"/oauth/approval_page", "/admin/imgCaptcha", "/actuator/**","/admin-dashboard","/upload-blogs","/view-blogs","/home-page","/blog-details","/contact-details","/course-details"
-								,"/exam-answer-metrials")
+								"/oauth/approval_page", "/admin/imgCaptcha", "/actuator/**","/admin-dashboard","/upload-blogs","/view-blogs","/blog-details","/contact-details","/course-details"
+								,"/exam-answer-metrials","/upload-exam-meterials","/view-exam-question-answer-metrials","/view-exam-question-sheet","/downloadSheets","/register-page","/edit-users-dashboard","/view-exam-question-answer-metrials","/upload-video","/video-details","/play-video","/home-page")
 						.requestMatchers(EndpointRequest.toAnyEndpoint()))
 				.authorizeRequests(authorize -> {
 					try {
@@ -156,11 +157,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public AuthenticationSuccessHandler authenticationSuccessHandler() {
 		return new LoginSuccessHandlar();
 	}
-
-	@Bean(name = "loginFailureHandler")
+	
+	
+	
+	@Bean({"loginFailureHandler","loginFailureHandler1"})
 	public AuthenticationFailureHandler loginFailureHandler() {
 		return new LoginFailureHandler();
 	}
+	
 
 
 
